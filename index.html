@@ -67,7 +67,7 @@
         </div>
     </div>
 
-    <aside class="w-72 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700 flex flex-col z-20 hidden md:flex transition-colors duration-300 h-full">
+    <aside id="sidebar" class="w-72 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700 flex flex-col z-40 hidden md:flex transition-colors duration-300 h-full">
         <div class="p-8 shrink-0">
             <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-3">
                 <div class="p-2 bg-primary-100 dark:bg-primary-500/10 rounded-lg">
@@ -111,11 +111,11 @@
         </div>
     </aside>
 
-    <div class="md:hidden fixed top-0 w-full bg-white dark:bg-slate-800 z-50 px-6 py-4 flex justify-between items-center border-b border-gray-200 dark:border-slate-700 shadow-sm">
+    <div class="md:hidden fixed top-0 w-full bg-white dark:bg-slate-800 z-30 px-6 py-4 flex justify-between items-center border-b border-gray-200 dark:border-slate-700 shadow-sm">
         <span class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
             <i data-lucide="layers" class="text-primary-500" size="20"></i> GestorServiços
         </span>
-        <button onclick="document.querySelector('aside').classList.toggle('hidden'); document.querySelector('aside').classList.toggle('absolute'); document.querySelector('aside').classList.toggle('h-full'); document.querySelector('aside').classList.toggle('w-full');" class="text-gray-600 dark:text-gray-300 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700">
+        <button onclick="app.toggleMobileMenu()" class="text-gray-600 dark:text-gray-300 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700">
             <i data-lucide="menu"></i>
         </button>
     </div>
@@ -140,7 +140,7 @@
                         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Padronização de logs de execução.</p>
                     </div>
                     <div class="flex flex-wrap gap-2">
-                        <button id="btnConsultarLoja" onclick="app.gerarJsonPlayStore()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-sm transition-all flex items-center gap-2">
+                        <button id="btnMapearLoja" onclick="app.gerarJsonPlayStore()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-sm transition-all flex items-center gap-2">
                             <i data-lucide="refresh-cw" size="16"></i> Mapear Loja
                         </button>
                         <button onclick="document.getElementById('importVersoesFile').click()" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-200 text-sm font-semibold rounded-lg shadow-sm transition-all flex items-center gap-2">
@@ -211,7 +211,7 @@
                 <div class="px-8 py-5 border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 flex justify-between items-center w-full">
                     <div>
                         <h2 class="text-lg font-bold text-gray-900 dark:text-white">Gerador de Relatórios</h2>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Padronização de resultados (NOK / OK).</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Padronização de resultados.</p>
                     </div>
                 </div>
                 <div class="p-8 grid grid-cols-1 md:grid-cols-12 gap-6">
@@ -221,9 +221,7 @@
                         <label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Versão do App</label>
                         <div class="flex gap-2">
                             <input type="text" id="errorVersion" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-white disabled:opacity-50" placeholder="Ex: 8.5.0" oninput="app.updateErrorReport()">
-                            <button onclick="app.consultarAppUnico()" class="px-3 bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-900/50 dark:hover:bg-indigo-800 text-indigo-600 dark:text-indigo-400 rounded-xl transition flex-shrink-0" title="Buscar versão deste app na loja">
-                                <i data-lucide="search" size="18"></i>
-                            </button>
+                            <button onclick="app.consultarAppUnico()" class="px-3 bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-900/50 dark:hover:bg-indigo-800 text-indigo-600 dark:text-indigo-400 rounded-xl transition flex-shrink-0" title="Buscar versão deste app"><i data-lucide="search" size="18"></i></button>
                         </div>
                     </div>
 
@@ -231,15 +229,12 @@
                     <div class="md:col-span-4 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Plataforma</label><select id="errorPlatform" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-white" onchange="app.updateErrorReport()"><option>Android</option><option>iOS</option><option>Desktop</option></select></div>
                     
                     <div class="md:col-span-12 space-y-2" id="analysisContainer">
-                        <div class="flex justify-between items-center">
-                            <label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Análise do QA</label>
-                            <button onclick="app.insertRaidiamText()" class="text-xs text-primary-600 font-semibold flex items-center gap-1"><i data-lucide="plus-circle" size="14"></i> Texto Raidiam</button>
-                        </div>
+                        <div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Análise do QA</label><button onclick="app.insertRaidiamText()" class="text-xs text-primary-600 font-semibold flex items-center gap-1"><i data-lucide="plus-circle" size="14"></i> Texto Raidiam</button></div>
                         <textarea id="errorAnalysis" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-mono h-24 resize-none dark:text-gray-300" oninput="app.updateErrorReport()"></textarea>
                     </div>
 
                 </div>
-                <div class="border-t border-gray-200 dark:border-slate-700 bg-gray-50/80 dark:bg-slate-900/30 p-6">
+                <div class="p-6 border-t border-gray-200 dark:border-slate-700">
                     <label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 block">Preview</label>
                     <div class="relative"><textarea id="errorResult" readonly class="w-full p-4 text-sm font-mono text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-950 border border-gray-200 dark:border-slate-700 rounded-xl h-48 resize-none"></textarea><button onclick="app.copyText('errorResult')" class="absolute top-3 right-3 px-4 py-2 bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 text-xs font-bold rounded-lg border border-gray-200 dark:border-slate-600 flex items-center gap-2"><i data-lucide="copy" size="14"></i> Copiar</button></div>
                 </div>
@@ -256,12 +251,8 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="chicago.exportSession()" class="px-3 py-2 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 shadow-sm transition flex items-center gap-2">
-                        <i data-lucide="download" size="16"></i> Backup Local
-                    </button>
-                    <button onclick="document.getElementById('chi_importFile').click()" class="px-3 py-2 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 shadow-sm transition flex items-center gap-2">
-                        <i data-lucide="upload" size="16"></i> Restaurar
-                    </button>
+                    <button onclick="chicago.exportSession()" class="px-3 py-2 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 shadow-sm transition flex items-center gap-2"><i data-lucide="download" size="16"></i> Backup Local</button>
+                    <button onclick="document.getElementById('chi_importFile').click()" class="px-3 py-2 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 shadow-sm transition flex items-center gap-2"><i data-lucide="upload" size="16"></i> Restaurar</button>
                     <input type="file" id="chi_importFile" accept=".json" class="hidden" onchange="chicago.importSession(this)">
                 </div>
             </div>
@@ -290,11 +281,8 @@
                     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden ring-1 ring-black/5">
                         <div class="px-6 py-4 border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 flex justify-between items-center">
                             <h3 class="font-bold text-gray-900 dark:text-white flex items-center gap-2"><i data-lucide="database" size="18" class="text-primary-500"></i> Configuração de Dados</h3>
-                            <button onclick="chicago.saveSession()" class="text-xs px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 shadow-sm transition flex items-center gap-1.5 font-medium">
-                                <i data-lucide="save" size="14"></i> Salvar 
-                            </button>
+                            <button onclick="chicago.saveSession()" class="text-xs px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 shadow-sm transition flex items-center gap-1.5 font-medium"><i data-lucide="save" size="14"></i> Salvar </button>
                         </div>
-                        
                         <div class="p-6 max-h-[600px] overflow-y-auto space-y-8 custom-scrollbar">
                             <div class="space-y-4">
                                 <h4 class="text-sm font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider border-b border-gray-200 dark:border-slate-700 pb-2 flex items-center gap-2"><i data-lucide="user" size="16"></i> Pessoa Física (PF)</h4>
@@ -309,7 +297,6 @@
                                     <div><label class="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">Tipo de Conta</label><input type="text" id="chi_tipo" class="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-lg text-sm dark:text-white uppercase" oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')" placeholder="Ex: TRAN"></div>
                                 </div>
                             </div>
-
                             <div class="space-y-4 pt-4 border-t border-gray-200 dark:border-slate-700">
                                 <h4 class="text-sm font-bold text-pink-600 dark:text-pink-400 uppercase tracking-wider pb-2 flex items-center gap-2"><i data-lucide="building-2" size="16"></i> Pessoa Jurídica (PJ)</h4>
                                 <div><label class="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">Nome da Empresa</label><input type="text" id="chi_empresa" class="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-lg text-sm dark:text-white"></div>
@@ -328,908 +315,307 @@
                 </div>
 
                 <div class="xl:col-span-8 space-y-6 flex flex-col">
-                    
                     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden flex-shrink-0">
                         <div class="p-6 bg-gradient-to-r from-gray-50 to-white dark:from-slate-800 dark:to-slate-800/80 border-b border-gray-200 dark:border-slate-700 space-y-4">
-                            
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4 border-b border-gray-200 dark:border-slate-700/50">
-                                <div>
-                                    <label class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block mb-1">Alias</label>
-                                    <input type="text" id="chi_alias" class="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none dark:text-white shadow-sm" placeholder="Ex: alias-teste">
-                                </div>
-                                <div>
-                                    <label class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block mb-1">AS-ID (Auth Server)</label>
-                                    <input type="text" id="chi_as_id" class="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none dark:text-white shadow-sm" placeholder="Ex: 12345-abcde">
-                                </div>
+                                <div><label class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block mb-1">Alias</label><input type="text" id="chi_alias" class="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none dark:text-white shadow-sm" placeholder="Ex: alias-teste"></div>
+                                <div><label class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block mb-1">AS-ID (Auth Server)</label><input type="text" id="chi_as_id" class="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none dark:text-white shadow-sm" placeholder="Ex: 12345-abcde"></div>
                             </div>
-
                             <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-                                
-                                <div class="md:col-span-2">
-                                    <label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-2">Seg.</label>
-                                    <select id="chi_select_segment" class="w-full px-3 py-3 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-primary-500 outline-none dark:text-white cursor-pointer shadow-sm">
-                                        <option value="pf">PF</option>
-                                        <option value="pj">PJ</option>
-                                    </select>
-                                </div>
-
+                                <div class="md:col-span-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-2">Seg.</label><select id="chi_select_segment" class="w-full px-3 py-3 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-primary-500 outline-none dark:text-white cursor-pointer shadow-sm"><option value="pf">PF</option><option value="pj">PJ</option></select></div>
                                 <div class="md:col-span-7">
                                     <label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-2">Tipo de Teste (Payload)</label>
                                     <select id="chi_select_test" class="w-full px-3 py-3 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-xl text-[12px] md:text-[13px] font-medium focus:ring-2 focus:ring-primary-500 outline-none dark:text-white cursor-pointer shadow-sm truncate">
-                                        
                                         <option value="sweeping">Production Funcional Tests For Automatic Sweeping Payments</option>
                                         <option value="payments">Production Functional Testes for Automatic Pix Payments</option>
                                         <option value="scheduling">Production Functional Tests For Automatic Pix Payments Scheduling</option>
                                         <option value="e2e">Production Funcional Tests For Payments E2E - API Version 4</option>
-                                        
                                         <option disabled value="" class="font-bold text-gray-400 dark:text-gray-600 text-center">──────────────── NOVOS TESTES ────────────────</option>
-
                                         <option value="no_redirect_auto_novo" class="text-primary-700 dark:text-primary-400 font-bold">Production Funcional Tests For No Redirect Automatic Pix Payments - API Version 2.2</option>
                                         <option value="no_redirect_pix_novo" class="text-primary-700 dark:text-primary-400 font-bold">Production Funcional Tests For No Redirect Payments - API Version 2.2</option>
                                         <option value="no_redirect_auto_sched_novo" class="text-primary-700 dark:text-primary-400 font-bold">Production Funcional Tests For no Redirect Automatic Pix Payments Scheduling - API Version 2.2</option>
                                         <option value="no_redirect_sched_novo" class="text-primary-700 dark:text-primary-400 font-bold">Production Funcional Tests For No Redirect Payments Scheduling - API Version 2.2</option>
-                                        
                                     </select>
                                 </div>
-
-                                <div class="md:col-span-3">
-                                    <button onclick="chicago.generateFromSelect()" class="w-full px-4 py-3 bg-gray-900 hover:bg-black dark:bg-primary-600 dark:hover:bg-primary-500 text-white text-sm font-bold rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
-                                        <i data-lucide="zap" size="18"></i> Gerar JSON
-                                    </button>
-                                </div>
-
+                                <div class="md:col-span-3"><button onclick="chicago.generateFromSelect()" class="w-full px-4 py-3 bg-gray-900 hover:bg-black dark:bg-primary-600 dark:hover:bg-primary-500 text-white text-sm font-bold rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"><i data-lucide="zap" size="18"></i> Gerar JSON</button></div>
                             </div>
                         </div>
                     </div>
-
                     <div class="bg-[#1e1e1e] rounded-2xl shadow-xl flex-1 flex flex-col overflow-hidden relative border border-gray-800 min-h-[400px]">
-                        <div class="px-5 py-3 bg-[#2d2d2d] flex justify-between items-center border-b border-black">
-                            <span class="text-xs font-mono text-gray-400 flex items-center gap-2"><i data-lucide="terminal" size="14"></i> payload_request.json</span>
-                            <button onclick="app.copyText('chi_result')" class="text-xs font-bold text-gray-300 hover:text-white flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-1.5 rounded-lg transition">
-                                <i data-lucide="copy" size="14"></i> Copiar Código
-                            </button>
-                        </div>
+                        <div class="px-5 py-3 bg-[#2d2d2d] flex justify-between items-center border-b border-black"><span class="text-xs font-mono text-gray-400 flex items-center gap-2"><i data-lucide="terminal" size="14"></i> payload_request.json</span><button onclick="app.copyText('chi_result')" class="text-xs font-bold text-gray-300 hover:text-white flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-1.5 rounded-lg transition"><i data-lucide="copy" size="14"></i> Copiar Código</button></div>
                         <textarea id="chi_result" readonly class="flex-1 w-full bg-transparent text-green-400 font-mono text-sm p-6 resize-none outline-none custom-scrollbar" placeholder="// Preencha os campos e clique em Gerar JSON..."></textarea>
                     </div>
-
                 </div>
             </div>
-
-            <div class="mt-12 pt-6 border-t border-gray-200 dark:border-slate-800 text-center pb-8">
-                <p class="text-xs text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1.5 font-medium">
-                    <i data-lucide="code-2" size="14" class="text-primary-500"></i>
-                    Módulo desenvolvido por <span class="font-bold text-gray-700 dark:text-gray-300">Ygor Jardim</span>
-                </p>
-            </div>
-
+            <div class="mt-12 pt-6 border-t border-gray-200 dark:border-slate-800 text-center pb-8"><p class="text-xs text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1.5 font-medium"><i data-lucide="code-2" size="14" class="text-primary-500"></i> Módulo desenvolvido por <span class="font-bold text-gray-700 dark:text-gray-300">Ygor Jardim</span></p></div>
         </div>
 
     </main>
 
     <script>
+        const getEl = id => document.getElementById(id);
+        const getVal = id => { const e=getEl(id); return e ? e.value : ''; };
+        const setVal = (id, v) => { const e=getEl(id); if(e) e.value = v; };
+
         const DB = {
-            marcas: ["ABC","Accreditto","Ailos","Ame Digital","Asaas","Azimut","Banco do Brasil","Banco do Nordeste","Banrisul","Bari","BMG","Bradesco","BRB","BTG Banking","BV","C6","Caixa","Celcoin","Cielo","Cora","Digio","Efí","Genial","Geru","Getnet","Hyundai","Infinite Pay","Inter","Itaú","Iti","Iugu","Listo","Master","Mei Fácil","Mercado Pago","Mercantil","Midway","Modal","Méliuz","Neon","Next","Nubank","Original","PagBank","Pan","Pic Pay","PlayersBank","Quero Quero Pag","Randon","RecargaPay","Rico","Safra","Santander","Sicoob","Sicredi","Sofisa","Stone","Super Digital","Uber Conta","Up.P","Volvo","WillBank","XP","Ágora Investimentos","Íon","BTG Investimentos","Santander Cartões","Santander Financiamentos","Santander Crédito Imob","Empréstimo Sim","Santander Corretora","Bradescard","Investimentos BB","Toro","Ourocard","BTG Empresas","Iniciador.com","Google Pay","Lina Openx","Banco Industrial","Pernambucanas","Rede","Porto Bank","WHG","MagaluPay","Monte Bravo","Klavi","Mobilize Financial","CrediNissan","Belvo","Àgora Investimento","Crefisa"],
-            testes: ["Pix Scheduling 1-2", "JSR Pix Verification 1-2", "Pix Retry 1-3", "Consents V3", "Accounts V3", "Debtor V4", "Not Cancelled V4", "Resources", "Unique", "Custom Core V4", "Real Email Invalid V4", "Fake Email Proxy V4", "SWP Total Allowed", "SWP Accounts Core", "Payments Core V2.2", "Invalid Challenge V2.2", "Invalid Origin V2.2", "Invalid Public Key V2.2", "Invalid RPID V2.2", "Pre-Enrollment V2.2", "Invalid Status V2.2", "Keys Swap V2.2", "Unmatching Fields V2.2", "APX Semanal", "APX Scheduled", "Authorised Executed", "Limits Negative", "Limits", "Not Authorised"]
+            marcas: ["ABC","Ailos","Ame Digital","Asaas","Banco do Brasil","Banco do Nordeste","Banrisul","Bari","BMG","Bradesco","BRB","BTG Banking","BV","C6","Caixa","Cielo","Cora","Digio","Efí","Inter","Itaú","Iti","Mercado Pago","Neon","Next","Nubank","PagBank","Pan","Pic Pay","Santander","Sicoob","Sicredi","Stone","WillBank","XP"],
+            testes: ["Pix Scheduling 1-2", "JSR Pix Verification 1-2", "Pix Retry 1-3", "Consents V3", "Accounts V3"]
         };
+        const PLAYSTORE_IDS = {"ABC": "br.com.abcbrasil.bancoabcbrasil", "Ailos": "br.com.ailos.app", "Ame Digital": "br.com.amedigital.ame", "Asaas": "br.com.asaas", "Banco do Brasil": "br.com.bb.android", "Banco do Nordeste": "br.gov.bnb.bancodonordeste.inb", "Banrisul": "br.com.banrisul", "Bari": "br.com.bancobari", "BMG": "br.com.bancobmg.bmg", "Bradesco": "com.bradesco", "BRB": "la.foton.brb.myphone", "BTG Banking": "com.btg.app.retail", "BV": "br.com.bv.app", "C6": "com.c6bank.app", "Caixa": "br.gov.caixa.android", "Cielo": "br.com.mobicare.cielo", "Cora": "br.com.cora", "Digio": "br.com.digio.app", "Efí": "br.com.gerencianet.app", "Inter": "br.com.intermedium", "Itaú": "com.itau", "Iti": "com.itau.iti", "Mercado Pago": "com.mercadopago.wallet", "Neon": "br.com.neon", "Next": "br.com.bradesco.next", "Nubank": "com.nu.production", "PagBank": "br.com.uol.ps", "Pan": "br.com.bancopan.app", "Pic Pay": "com.picpay", "Santander": "com.santander.app", "Sicoob": "br.com.sicoob.net", "Sicredi": "br.com.sicredi.mob", "Stone": "co.stone.app.br", "WillBank": "br.com.willbank.app", "XP": "br.com.xp.carteira"};
 
         const app = {
-            versoesLoja: {}, // Cache interno das versões
-
+            versoesLoja: {},
             init: function() {
                 this.verifyAuthStatus();
                 this.populateLists();
-                if(document.getElementById('logData')) document.getElementById('logData').valueAsDate = new Date();
+                if(getEl('logData')) getEl('logData').valueAsDate = new Date();
                 this.renderTable();
                 this.setupListeners();
                 lucide.createIcons();
                 this.syncEvidences();
                 this.updateErrorReport();
 
-                if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                    document.documentElement.classList.add('dark');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                }
+                if (localStorage.getItem('theme')==='dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
 
-                // Carrega JSON da memória, se existir
-                const cacheJson = localStorage.getItem('versoes_playstore_cache');
-                if (cacheJson) {
-                    this.versoesLoja = JSON.parse(cacheJson);
-                }
+                const cache = localStorage.getItem('versoes_playstore_cache');
+                if (cache) this.versoesLoja = JSON.parse(cache);
 
-                this.switchTab('chicago'); 
+                this.switchTab('nomenclatura'); 
                 chicago.loadSession(); 
             },
-
-            // ==========================================
-            // LÓGICA DA PLAY STORE (Bulk, Single, Upload)
-            // ==========================================
             
-            // Lê do Cache Interno
-            preencherVersaoInterna: function() {
-                const marca = document.getElementById('logMarca').value;
-                const campoVersao = document.getElementById('errorVersion');
-                
-                if (this.versoesLoja && this.versoesLoja[marca]) {
-                    campoVersao.value = this.versoesLoja[marca];
-                    this.updateErrorReport();
-                } else if (marca) {
-                    campoVersao.value = "Pendente...";
-                }
+            toggleMobileMenu: function() {
+                const s = getEl('sidebar');
+                s.classList.toggle('hidden'); s.classList.toggle('absolute'); s.classList.toggle('h-full'); s.classList.toggle('w-full');
             },
 
-            // Importa o JSON gerado
+            preencherVersaoInterna: function() {
+                const m = getVal('logMarca');
+                if (this.versoesLoja[m]) { setVal('errorVersion', this.versoesLoja[m]); this.updateErrorReport(); }
+                else if (m) setVal('errorVersion', "Pendente...");
+            },
+
             importarVersoesJson: function(inp) {
-                const f = inp.files[0];
-                if(!f) return;
+                const f = inp.files[0]; if(!f) return;
                 const r = new FileReader();
                 r.onload = e => {
-                    try {
-                        const j = JSON.parse(e.target.result);
-                        this.versoesLoja = j;
-                        localStorage.setItem('versoes_playstore_cache', JSON.stringify(j));
-                        this.showToast("Versões carregadas do arquivo com sucesso!", "success");
-                        this.preencherVersaoInterna(); // atualiza a tela
-                    } catch(err) {
-                        this.showToast("Erro ao ler o arquivo JSON", "error");
-                    }
+                    try { const j = JSON.parse(e.target.result); this.versoesLoja = j; localStorage.setItem('versoes_playstore_cache', JSON.stringify(j)); this.showToast("Versões carregadas!"); this.preencherVersaoInterna(); }
+                    catch(err) { this.showToast("Erro JSON", "error"); }
                     inp.value = "";
-                };
-                r.readAsText(f);
+                }; r.readAsText(f);
             },
 
-            // Busca 1 App Só (Botão da Lupa na Aba Relatórios)
             consultarAppUnico: async function() {
-                const marca = document.getElementById('logMarca').value;
-                const campoVersao = document.getElementById('errorVersion');
-                
-                if (!marca) return this.showToast("Selecione uma Marca na aba Nomenclatura primeiro!", "error");
-                
-                const IDS = {
-                    "ABC": "br.com.abcbrasil.bancoabcbrasil", "Ailos": "br.com.ailos.app", "Ame Digital": "br.com.amedigital.ame",
-                    "Asaas": "br.com.asaas", "Banco do Brasil": "br.com.bb.android", "Banco do Nordeste": "br.gov.bnb.bancodonordeste.inb",
-                    "Banrisul": "br.com.banrisul", "Bari": "br.com.bancobari", "BMG": "br.com.bancobmg.bmg",
-                    "Bradesco": "com.bradesco", "BRB": "la.foton.brb.myphone", "BTG Banking": "com.btg.app.retail",
-                    "BV": "br.com.bv.app", "C6": "com.c6bank.app", "Caixa": "br.gov.caixa.android",
-                    "Cielo": "br.com.mobicare.cielo", "Cora": "br.com.cora", "Digio": "br.com.digio.app",
-                    "Efí": "br.com.gerencianet.app", "Inter": "br.com.intermedium", "Itaú": "com.itau",
-                    "Iti": "com.itau.iti", "Mercado Pago": "com.mercadopago.wallet", "Neon": "br.com.neon",
-                    "Next": "br.com.bradesco.next", "Nubank": "com.nu.production", "PagBank": "br.com.uol.ps",
-                    "Pan": "br.com.bancopan.app", "Pic Pay": "com.picpay", "Santander": "com.santander.app",
-                    "Sicoob": "br.com.sicoob.net", "Sicredi": "br.com.sicredi.mob", "Stone": "co.stone.app.br",
-                    "WillBank": "br.com.willbank.app", "XP": "br.com.xp.carteira"
-                };
+                const m = getVal('logMarca');
+                if (!m) return this.showToast("Selecione Marca!", "error");
+                const pid = PLAYSTORE_IDS[m];
+                if (!pid) return this.showToast("Sem ID mapeado.", "error");
 
-                const packageId = IDS[marca];
-                if (!packageId) return this.showToast("Esta marca não possui ID mapeado na Loja.", "error");
-
-                campoVersao.value = "Buscando...";
+                setVal('errorVersion', "Buscando...");
                 try {
-                    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent('https://play.google.com/store/apps/details?id=' + packageId + '&hl=pt_BR')}`;
-                    const response = await fetch(proxyUrl);
-                    const data = await response.json();
-                    const html = data.contents;
-                    const match = html.match(/\[\[\["([\d\.]+)"\]\]/) || html.match(/AF_initDataCallback\({key: 'ds:5'.*?data:\[\[\["([\d\.]+)"\]\]/);
-                    
-                    if (match && match[1]) {
-                        campoVersao.value = match[1];
-                        this.versoesLoja[marca] = match[1]; // Atualiza cache
-                        localStorage.setItem('versoes_playstore_cache', JSON.stringify(this.versoesLoja));
-                        this.showToast("Versão atualizada!");
-                    } else {
-                        campoVersao.value = "Varia por disp.";
-                    }
+                    const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://play.google.com/store/apps/details?id='+pid+'&hl=pt_BR')}`);
+                    const d = await r.json();
+                    const html = d.contents;
+                    const mt = html.match(/\[\[\["([\d\.]+)"\]\]/) || html.match(/AF_initDataCallback\({key: 'ds:5'.*?data:\[\[\["([\d\.]+)"\]\]/);
+                    if (mt && mt[1]) { setVal('errorVersion', mt[1]); this.versoesLoja[m] = mt[1]; localStorage.setItem('versoes_playstore_cache', JSON.stringify(this.versoesLoja)); this.showToast("Atualizado!"); }
+                    else setVal('errorVersion', "Varia por disp.");
                     this.updateErrorReport();
-                } catch (e) {
-                    campoVersao.value = "Erro";
-                    this.showToast("Erro na conexão com a loja", "error");
-                }
+                } catch (e) { setVal('errorVersion', "Erro"); this.showToast("Erro conexão", "error"); }
             },
 
-            // Busca Toda a Loja LENTAMENTE (Gera JSON)
             gerarJsonPlayStore: async function() {
-                const btn = document.getElementById('btnConsultarLoja');
-                const btnTextOriginal = btn ? btn.innerHTML : '';
+                const btn = getEl('btnMapearLoja'); const btn2 = getEl('btnConsultarLoja');
+                const txtOri = btn ? btn.innerHTML : ''; const txtOri2 = btn2 ? btn2.innerHTML : '';
+                const mArr = Object.keys(PLAYSTORE_IDS); let res = {};
+                this.showToast(`Mapeando ${mArr.length} apps. Leva ~1 minuto.`, "success");
                 
-                const IDS = {
-                    "ABC": "br.com.abcbrasil.bancoabcbrasil", "Ailos": "br.com.ailos.app", "Ame Digital": "br.com.amedigital.ame",
-                    "Asaas": "br.com.asaas", "Banco do Brasil": "br.com.bb.android", "Banco do Nordeste": "br.gov.bnb.bancodonordeste.inb",
-                    "Banrisul": "br.com.banrisul", "Bari": "br.com.bancobari", "BMG": "br.com.bancobmg.bmg",
-                    "Bradesco": "com.bradesco", "BRB": "la.foton.brb.myphone", "BTG Banking": "com.btg.app.retail",
-                    "BV": "br.com.bv.app", "C6": "com.c6bank.app", "Caixa": "br.gov.caixa.android",
-                    "Cielo": "br.com.mobicare.cielo", "Cora": "br.com.cora", "Digio": "br.com.digio.app",
-                    "Efí": "br.com.gerencianet.app", "Inter": "br.com.intermedium", "Itaú": "com.itau",
-                    "Iti": "com.itau.iti", "Mercado Pago": "com.mercadopago.wallet", "Neon": "br.com.neon",
-                    "Next": "br.com.bradesco.next", "Nubank": "com.nu.production", "PagBank": "br.com.uol.ps",
-                    "Pan": "br.com.bancopan.app", "Pic Pay": "com.picpay", "Santander": "com.santander.app",
-                    "Sicoob": "br.com.sicoob.net", "Sicredi": "br.com.sicredi.mob", "Stone": "co.stone.app.br",
-                    "WillBank": "br.com.willbank.app", "XP": "br.com.xp.carteira"
-                };
+                const setBtn = (el, txt, dis) => { if(el){ el.innerHTML = txt; el.disabled = dis; if(dis) el.classList.add('opacity-50'); else el.classList.remove('opacity-50'); if(lucide) lucide.createIcons(); }};
+                setBtn(btn, `<i class="animate-spin" data-lucide="loader-2" size="18"></i> Lendo...`, true);
+                setBtn(btn2, `<i class="animate-spin" data-lucide="loader-2" size="18"></i> Lendo...`, true);
 
-                const marcas = Object.keys(IDS);
-                let jsonResultado = {};
-
-                this.showToast(`Mapeando ${marcas.length} bancos. Isso leva ~1 minuto...`, "success");
-                
-                if (btn) {
-                    btn.disabled = true;
-                    btn.classList.add('opacity-50', 'cursor-not-allowed');
-                }
-
-                // Loop LENTO
-                for (let i = 0; i < marcas.length; i++) {
-                    const marca = marcas[i];
-                    const packageId = IDS[marca];
-                    
-                    if(btn) {
-                        btn.innerHTML = `<i class="animate-spin" data-lucide="loader-2" size="18"></i> Lendo ${marca} (${i+1}/${marcas.length})`;
-                        if (typeof lucide !== 'undefined') lucide.createIcons();
-                    }
-
+                for (let i=0; i<mArr.length; i++) {
+                    const m = mArr[i]; const pid = PLAYSTORE_IDS[m];
+                    const sp = `<i class="animate-spin" data-lucide="loader-2" size="18"></i> ${m} (${i+1}/${mArr.length})`;
+                    setBtn(btn, sp, true); setBtn(btn2, sp, true);
                     try {
-                        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent('https://play.google.com/store/apps/details?id=' + packageId + '&hl=pt_BR')}`;
-                        const response = await fetch(proxyUrl);
-                        const data = await response.json();
-                        const html = data.contents;
-
-                        const match = html.match(/\[\[\["([\d\.]+)"\]\]/) || html.match(/AF_initDataCallback\({key: 'ds:5'.*?data:\[\[\["([\d\.]+)"\]\]/);
-                        
-                        jsonResultado[marca] = (match && match[1]) ? match[1] : "Varia por disp.";
-
-                    } catch (e) {
-                        jsonResultado[marca] = "Erro de Leitura";
-                    }
-
-                    // A MÁGICA: Espera 2.5 segundos (2500 ms)
-                    await new Promise(resolve => setTimeout(resolve, 2500));
+                        const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://play.google.com/store/apps/details?id='+pid+'&hl=pt_BR')}`);
+                        const d = await r.json(); const h = d.contents;
+                        const mt = h.match(/\[\[\["([\d\.]+)"\]\]/) || h.match(/AF_initDataCallback\({key: 'ds:5'.*?data:\[\[\["([\d\.]+)"\]\]/);
+                        res[m] = (mt && mt[1]) ? mt[1] : "Varia por disp.";
+                    } catch (e) { res[m] = "Erro"; }
+                    await new Promise(r => setTimeout(r, 2500));
                 }
-
-                // Salva internamente
-                this.versoesLoja = jsonResultado;
-                localStorage.setItem('versoes_playstore_cache', JSON.stringify(jsonResultado));
-
-                // Baixa o arquivo para o QA
-                const blob = new Blob([JSON.stringify(jsonResultado, null, 4)], { type: "application/json" });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = `versoes_playstore_${new Date().toISOString().slice(0,10)}.json`;
-                a.click();
-
-                // Finaliza
-                if (btn) {
-                    btn.innerHTML = btnTextOriginal;
-                    btn.disabled = false;
-                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                    if (typeof lucide !== 'undefined') lucide.createIcons();
-                }
+                this.versoesLoja = res; localStorage.setItem('versoes_playstore_cache', JSON.stringify(res));
+                const bl = new Blob([JSON.stringify(res, null, 4)], { type: "application/json" });
+                const a = document.createElement("a"); a.href = URL.createObjectURL(bl); a.download = `versoes_playstore_${new Date().toISOString().slice(0,10)}.json`; a.click();
                 
-                this.preencherVersaoInterna();
-                this.showToast("Mapeamento concluído!", "success");
+                setBtn(btn, txtOri, false); setBtn(btn2, txtOri2, false);
+                this.preencherVersaoInterna(); this.showToast("Mapeamento concluído!", "success");
             },
 
-            // ==========================================
-            // LÓGICA DE SEGURANÇA E BLOQUEIO DE TELA
-            // ==========================================
             checkLogin: function() {
-                const input = document.getElementById('passInput').value;
-                const error = document.getElementById('loginError');
-                
-                const SENHA_B64 = "cWEyMDI2"; 
-
-                if (btoa(input) === SENHA_B64) {
-                    sessionStorage.setItem('qa_auth', 'true');
-                    sessionStorage.setItem('qa_last_activity', Date.now());
-                    
-                    document.getElementById('loginOverlay').classList.add('opacity-0');
-                    setTimeout(() => { document.getElementById('loginOverlay').style.display = 'none'; }, 300);
-                    
-                    this.iniciarMonitoramentoInatividade();
-                } else {
-                    error.classList.remove('hidden');
-                    document.getElementById('passInput').value = '';
-                    document.getElementById('passInput').focus();
-                }
+                if (btoa(getVal('passInput')) === "cWEyMDI2") {
+                    sessionStorage.setItem('qa_auth', 'true'); sessionStorage.setItem('qa_last_activity', Date.now());
+                    getEl('loginOverlay').style.display = 'none'; this.iniciarMonitoramentoInatividade();
+                } else getEl('loginError').classList.remove('hidden');
             },
-
             verifyAuthStatus: function() {
-                const TEMPO_LIMITE_MINUTOS = 15;
                 if (sessionStorage.getItem('qa_auth') === 'true') {
-                    const ultimaAtividade = parseInt(sessionStorage.getItem('qa_last_activity') || '0');
-                    const tempoOcioso = (Date.now() - ultimaAtividade) / 1000 / 60;
-                    
-                    if (tempoOcioso > TEMPO_LIMITE_MINUTOS) {
-                        this.logoutPorInatividade();
-                    } else {
-                        document.getElementById('loginOverlay').style.display = 'none';
-                        this.iniciarMonitoramentoInatividade();
-                    }
+                    if ((Date.now() - parseInt(sessionStorage.getItem('qa_last_activity'))) / 60000 > 15) this.logoutPorInatividade();
+                    else { getEl('loginOverlay').style.display = 'none'; this.iniciarMonitoramentoInatividade(); }
                 }
             },
-
-            iniciarMonitoramentoInatividade: function() {
-                document.onmousemove = () => this.resetarTempo();
-                document.onkeypress = () => this.resetarTempo();
-                document.ontouchstart = () => this.resetarTempo();
-                this.resetarTempo();
-            },
-
+            iniciarMonitoramentoInatividade: function() { document.onmousemove = document.onkeypress = document.ontouchstart = () => this.resetarTempo(); this.resetarTempo(); },
             resetarTempo: function() {
-                const TEMPO_LIMITE_MINUTOS = 15;
                 if (sessionStorage.getItem('qa_auth') === 'true') {
                     sessionStorage.setItem('qa_last_activity', Date.now());
-                    clearTimeout(window.timeoutInatividade);
-                    window.timeoutInatividade = setTimeout(() => app.logoutPorInatividade(), TEMPO_LIMITE_MINUTOS * 60000);
+                    clearTimeout(window.timeoutInatividade); window.timeoutInatividade = setTimeout(() => this.logoutPorInatividade(), 900000);
                 }
             },
-
             logoutPorInatividade: function() {
                 sessionStorage.removeItem('qa_auth');
-                const overlay = document.getElementById('loginOverlay');
-                overlay.style.display = 'flex';
-                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
-                this.showToast("Sessão expirada por inatividade.", "error");
+                getEl('loginOverlay').style.display = 'flex'; this.showToast("Sessão expirada", "error");
             },
-
-            // --- LÓGICAS DAS ABAS ANTIGAS ---
             populateLists: function() {
-                const createOptions = (arr, elId) => {
-                    const el = document.getElementById(elId);
-                    if(!el) return;
-                    arr.forEach(i => { const opt = document.createElement('option'); opt.value = i; el.appendChild(opt); });
-                };
-                createOptions(DB.marcas, 'listMarcas');
-                createOptions(DB.testes, 'listTestes');
+                const add = (arr, id) => { const e = getEl(id); if(e) arr.forEach(i => { const o = document.createElement('option'); o.value = i; e.appendChild(o); }); };
+                add(DB.marcas, 'listMarcas'); add(DB.testes, 'listTestes');
             },
-            setupListeners: function() {
-                ['agendaTipo', 'agendaInicio', 'agendaMarca', 'agendaSegmento'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if(el) el.addEventListener('input', () => this.calculateAgenda());
+            setupListeners: function() { ['agendaTipo', 'agendaInicio', 'agendaMarca', 'agendaSegmento'].forEach(id => { const e = getEl(id); if(e) e.addEventListener('input', () => this.calculateAgenda()); }); },
+            
+            switchTab: function(tName) {
+                ['nomenclatura', 'agendamentos', 'relatorios', 'chicago'].forEach(t => {
+                    const v = getEl(`view-${t}`); const btn = getEl(`nav-${t}`);
+                    if(!v || !btn) return;
+                    if(t === tName) { v.classList.remove('hidden'); btn.className = "group w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 bg-primary-600 text-white shadow-lg shadow-primary-500/20"; } 
+                    else { v.classList.add('hidden'); btn.className = "group w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700/50"; }
                 });
+                if(window.innerWidth < 768) { const s = getEl('sidebar'); s.classList.add('hidden'); s.classList.remove('absolute','h-full','w-full'); }
             },
-            switchTab: function(tabName) {
-                const activeClasses = "bg-primary-600 text-white shadow-lg shadow-primary-500/20";
-                const inactiveClasses = "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700/50";
-                const tabs = ['nomenclatura', 'agendamentos', 'relatorios', 'chicago'];
-                tabs.forEach(t => {
-                    const btn = document.getElementById(`nav-${t}`);
-                    const view = document.getElementById(`view-${t}`);
-                    if(!btn || !view) return;
-                    if(t === tabName) {
-                        view.classList.remove('hidden');
-                        btn.className = `group w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${activeClasses}`;
-                    } else {
-                        view.classList.add('hidden');
-                        btn.className = `group w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${inactiveClasses}`;
-                    }
-                });
-            },
-            toggleTheme: function() {
-                if (document.documentElement.classList.contains('dark')) {
-                    document.documentElement.classList.remove('dark');
-                    localStorage.setItem('theme', 'light');
-                } else {
-                    document.documentElement.classList.add('dark');
-                    localStorage.setItem('theme', 'dark');
-                }
-            },
-            showToast: function(msg, type = 'success') {
-                const t = document.getElementById('toast');
-                const m = document.getElementById('toast-msg');
-                const title = document.getElementById('toast-title');
-                const iconBg = document.getElementById('toast-icon-bg');
-                m.textContent = msg;
-                if (type === 'error') {
-                    t.classList.remove('border-green-500'); t.classList.add('border-red-500');
-                    iconBg.className = 'inline-flex items-center justify-center flex-shrink-0 w-9 h-9 text-red-500 bg-red-100 rounded-lg dark:bg-red-500/20 dark:text-red-400';
-                    title.textContent = 'Atenção';
-                    document.getElementById('toast-icon').setAttribute('data-lucide', 'alert-circle');
-                } else {
-                    t.classList.remove('border-red-500'); t.classList.add('border-green-500');
-                    iconBg.className = 'inline-flex items-center justify-center flex-shrink-0 w-9 h-9 text-green-500 bg-green-100 rounded-lg dark:bg-green-500/20 dark:text-green-400';
-                    title.textContent = 'Sucesso!';
-                    document.getElementById('toast-icon').setAttribute('data-lucide', 'check-circle-2');
-                }
-                lucide.createIcons();
-                t.classList.remove('translate-x-[120%]', 'opacity-0');
-                setTimeout(() => t.classList.add('translate-x-[120%]', 'opacity-0'), 3500);
+            toggleTheme: function() { document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark')?'dark':'light'); },
+            showToast: function(msg, typ = 'success') {
+                const t = getEl('toast'); getEl('toast-msg').textContent = msg;
+                if(typ==='error'){ t.classList.replace('border-green-500','border-red-500'); getEl('toast-icon-bg').className='inline-flex items-center justify-center flex-shrink-0 w-9 h-9 text-red-500 bg-red-100 rounded-lg dark:bg-red-500/20 dark:text-red-400'; getEl('toast-title').textContent='Atenção'; getEl('toast-icon').setAttribute('data-lucide','alert-circle'); }
+                else { t.classList.replace('border-red-500','border-green-500'); getEl('toast-icon-bg').className='inline-flex items-center justify-center flex-shrink-0 w-9 h-9 text-green-500 bg-green-100 rounded-lg dark:bg-green-500/20 dark:text-green-400'; getEl('toast-title').textContent='Sucesso!'; getEl('toast-icon').setAttribute('data-lucide','check-circle-2'); }
+                lucide.createIcons(); t.classList.remove('translate-x-[120%]', 'opacity-0'); setTimeout(() => t.classList.add('translate-x-[120%]', 'opacity-0'), 3500);
             },
             generateLog: function() {
-                const f = { teste: document.getElementById('logTeste').value, so: document.getElementById('logSO').value, marca: document.getElementById('logMarca').value, seg: document.getElementById('logSegmento').value, status: document.getElementById('logStatus').value, data: document.getElementById('logData').value };
-                if(!f.teste || !f.marca) { this.showToast("Preencha Marca e Teste!", "error"); return; }
-                const str = `${f.status} - ${f.marca} - ${f.seg} - ${f.teste} - ${f.data.split('-').reverse().join('-')} - ${f.so}`;
-                document.getElementById('logResult').textContent = str;
-                document.getElementById('logGroup').classList.remove('hidden');
-                this.copyText('logResult');
+                const t=getVal('logTeste'), so=getVal('logSO'), m=getVal('logMarca'), seg=getVal('logSegmento'), st=getVal('logStatus'), dt=getVal('logData');
+                if(!t || !m) return this.showToast("Preencha Marca e Teste!", "error");
+                getEl('logResult').textContent = `${st} - ${m} - ${seg} - ${t} - ${dt.split('-').reverse().join('-')} - ${so}`;
+                getEl('logGroup').classList.remove('hidden'); this.copyText('logResult');
             },
-            syncEvidences: function() { 
-                const marca = document.getElementById('logMarca').value || "...";
-                const seg = document.getElementById('logSegmento').value;
-                document.getElementById('evResult1').textContent = `Evidencia - ${marca} - ${seg} - Saldo`;
-                document.getElementById('evResult2').textContent = `Evidencia - ${marca} - ${seg} - Versão app`;
-                document.getElementById('evResult3').textContent = `Evidencia - ${marca} - ${seg} - Mensagem de erro`;
-            },
-            copyText: function(id) {
-                const el = document.getElementById(id);
-                const txt = el.value !== undefined ? el.value : el.textContent;
-                navigator.clipboard.writeText(txt).then(() => this.showToast('Copiado para a área de transferência!'));
-            },
+            syncEvidences: function() { const m = getVal('logMarca')||"..."; const s = getVal('logSegmento'); getEl('evResult1').innerHTML = `Evidencia - ${m} - ${s} - Saldo <i data-lucide="copy" size="16" class="text-gray-400"></i>`; getEl('evResult2').innerHTML = `Evidencia - ${m} - ${s} - Versão app <i data-lucide="copy" size="16" class="text-gray-400"></i>`; getEl('evResult3').innerHTML = `Evidencia - ${m} - ${s} - Mensagem de erro <i data-lucide="copy" size="16" class="text-gray-400"></i>`; lucide.createIcons(); },
+            copyText: function(id) { const e = getEl(id); navigator.clipboard.writeText(e.value !== undefined ? e.value : e.textContent.trim()).then(() => this.showToast('Copiado!')); },
             checkSync: function() { 
-                const f = { teste: document.getElementById('logTeste').value, marca: document.getElementById('logMarca').value, seg: document.getElementById('logSegmento').value, status: document.getElementById('logStatus').value, data: document.getElementById('logData').value };
-                const triggers = ["Pix Scheduling 1-2", "JSR Pix Verification 1-2", "Pix Retry 1-3"];
-                if (triggers.includes(f.teste) && f.marca && f.status === 'OK') {
-                    document.getElementById('agendaMarca').value = f.marca;
-                    document.getElementById('agendaSegmento').value = f.seg;
-                    document.getElementById('agendaTipo').value = f.teste;
-                    if(f.data) document.getElementById('agendaInicio').value = f.data;
-                    this.showToast('Sincronizado!');
-                    this.calculateAgenda();
+                const t=getVal('logTeste'), m=getVal('logMarca'), s=getVal('logStatus');
+                if (["Pix Scheduling 1-2", "JSR Pix Verification 1-2", "Pix Retry 1-3"].includes(t) && m && s==='OK') {
+                    setVal('agendaMarca',m); setVal('agendaSegmento',getVal('logSegmento')); setVal('agendaTipo',t); setVal('agendaInicio',getVal('logData'));
+                    this.showToast('Sincronizado!'); this.calculateAgenda();
                 }
             },
             calculateAgenda: function() { 
-                const type = document.getElementById('agendaTipo').value;
-                const startStr = document.getElementById('agendaInicio').value;
-                const brand = document.getElementById('agendaMarca').value || "MARCA";
-                const seg = document.getElementById('agendaSegmento').value;
-                if (!type || !startStr) return;
-                const isRetry = type.includes("Retry");
-                const days = isRetry ? 3 : 2;
-                const start = new Date(startStr + 'T00:00:00');
-                const end = new Date(start);
-                end.setDate(start.getDate() + days);
-                document.getElementById('agendaFim').value = end.toISOString().split('T')[0];
-                document.getElementById('btnGoogle').disabled = false;
+                const t = getVal('agendaTipo'), stStr = getVal('agendaInicio'), m = getVal('agendaMarca')||"MARCA", sg = getVal('agendaSegmento');
+                if (!t || !stStr) return;
+                const isR = t.includes("Retry"); const st = new Date(stStr+'T00:00:00'); const en = new Date(st); en.setDate(st.getDate() + (isR?3:2));
+                setVal('agendaFim', en.toISOString().split('T')[0]); getEl('btnGoogle').disabled = false;
                 const fmt = d => `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
-                const add = (d, n) => { const x = new Date(d); x.setDate(d.getDate()+n); return x; };
-                let txt = `=== 📋 GUIA: ${brand.toUpperCase()} [${seg}] ===\nTeste: ${type}\n\n`;
-                if (isRetry) {
-                    txt += `💰 SALDO: R$ 0,00 (Obrigatório)\n🚫 Bloqueio TOTAL de pagamentos.\n📅 CRONOGRAMA:\n`;
-                    txt += `[ ] ${fmt(add(start,0))} (D+0): R$ 0,00\n[ ] ${fmt(add(start,1))} (D+1): R$ 0,00\n[ ] ${fmt(add(start,2))} (D+2): R$ 0,00\n[👉] ${fmt(add(start,3))} (D+3): Pagar R$ 1,00`;
-                } else {
-                    txt += `💰 SALDO: Mínimo R$ 5,00\n📅 CRONOGRAMA:\n`;
-                    txt += `[ ] ${fmt(add(start,0))} (D+0): Saldo R$ 2,00\n[ ] ${fmt(add(start,1))} (D+1): Saldo R$ 2,00\n[ ] ${fmt(add(start,2))} (D+2): Saldo R$ 1,00`;
-                }
-                document.getElementById('agendaInstrucoes').value = txt;
+                const add = (d,n) => { const x=new Date(d); x.setDate(d.getDate()+n); return x; };
+                let txt = `=== 📋 GUIA: ${m.toUpperCase()} [${sg}] ===\nTeste: ${t}\n\n`;
+                if (isR) txt += `💰 SALDO: R$ 0,00 (Obrigatório)\n🚫 Bloqueio TOTAL de pagamentos.\n📅 CRONOGRAMA:\n[ ] ${fmt(add(st,0))} (D+0): R$ 0,00\n[ ] ${fmt(add(st,1))} (D+1): R$ 0,00\n[ ] ${fmt(add(st,2))} (D+2): R$ 0,00\n[👉] ${fmt(add(st,3))} (D+3): Pagar R$ 1,00`;
+                else txt += `💰 SALDO: Mínimo R$ 5,00\n📅 CRONOGRAMA:\n[ ] ${fmt(add(st,0))} (D+0): Saldo R$ 2,00\n[ ] ${fmt(add(st,1))} (D+1): Saldo R$ 2,00\n[ ] ${fmt(add(st,2))} (D+2): Saldo R$ 1,00`;
+                setVal('agendaInstrucoes', txt);
             },
             updateErrorReport: function() { 
-                const stage = document.getElementById('errorStage').value;
-                const version = document.getElementById('errorVersion').value;
-                const attempts = document.getElementById('errorAttempts').value;
-                const platform = document.getElementById('errorPlatform').value;
-                const analysis = document.getElementById('errorAnalysis').value;
-                const versionInput = document.getElementById('errorVersion');
-                const analysisContainer = document.getElementById('analysisContainer');
-                if (stage === '1') { versionInput.disabled = true; versionInput.placeholder = "Não aplicável"; } else { versionInput.disabled = false; versionInput.placeholder = "Ex: 8.5.0"; }
-                if (stage === '5') { analysisContainer.style.display = 'none'; } else { analysisContainer.style.display = 'block'; }
-                const commonPhrase = "Anexo o log com detalhamento.\n";
-                let text = "";
-                if (stage === '1') {
-                    if(!analysis && document.getElementById('errorAnalysis').value === "") document.getElementById('errorAnalysis').value = "Boa tarde, o teste foi realizado pelo usuário mas apresentou erro.";
-                    text = `Prezados, realizamos o teste solicitado, porém apresentou erro antes do redirecionamento.\n${commonPhrase}Número de tentativas: ${attempts}\nAnálise do QA: ${document.getElementById('errorAnalysis').value}`;
-                } else if (stage === '2') {
-                    text = `Prezados, realizamos o teste solicitado, porém apresentou erro durante a etapa de login do usuário.\n${commonPhrase}Versão do app: ${version}\nNúmero de tentativas: ${attempts}\nPlataforma: ${platform}\nAnálise do QA: ${analysis}`;
-                } else if (stage === '3') {
-                    text = `Prezados, realizamos o teste solicitado, porém apresentou erro durante a jornada de consentimento.\n${commonPhrase}Versão do app: ${version}\nNúmero de tentativas: ${attempts}\nPlataforma: ${platform}\nAnálise do QA: ${analysis}`;
-                } else if (stage === '4') {
-                    text = `Prezados, realizamos o teste solicitado, porém ao retornar para o FVP apresenta erro.\n${commonPhrase}Versão: ${version}\nNúmero de tentativas: ${attempts}\nPlataforma: ${platform}\nAnálise do QA: ${analysis}`;
-                } else if (stage === '5') {
-                    text = `Teste realizado com sucesso.\n${commonPhrase}Versão app: ${version}\nNúmero de tentativas: ${attempts}\nPlataforma: ${platform}`;
-                }
-                document.getElementById('errorResult').value = text;
+                const stg = getVal('errorStage'), ver = getVal('errorVersion'), att = getVal('errorAttempts'), plat = getVal('errorPlatform'), ana = getVal('errorAnalysis');
+                getEl('errorVersion').disabled = (stg==='1'); getEl('errorVersion').placeholder = (stg==='1')?"Não aplicável":"Ex: 8.5.0";
+                getEl('analysisContainer').style.display = (stg==='5')?'none':'block';
+                const cP = "Anexo o log com detalhamento.\n"; let txt = "";
+                if(stg==='1'){ if(!ana) setVal('errorAnalysis',"Boa tarde, o teste foi realizado pelo usuário mas apresentou erro."); txt = `Prezados, realizamos o teste solicitado, porém apresentou erro antes do redirecionamento.\n${cP}Número de tentativas: ${att}\nAnálise do QA: ${getVal('errorAnalysis')}`; }
+                else if(stg==='2') txt = `Prezados, realizamos o teste solicitado, porém apresentou erro durante a etapa de login do usuário.\n${cP}Versão do app: ${ver}\nNúmero de tentativas: ${att}\nPlataforma: ${plat}\nAnálise do QA: ${ana}`;
+                else if(stg==='3') txt = `Prezados, realizamos o teste solicitado, porém apresentou erro durante a jornada de consentimento.\n${cP}Versão do app: ${ver}\nNúmero de tentativas: ${att}\nPlataforma: ${plat}\nAnálise do QA: ${ana}`;
+                else if(stg==='4') txt = `Prezados, realizamos o teste solicitado, porém ao retornar para o FVP apresenta erro.\n${cP}Versão: ${ver}\nNúmero de tentativas: ${att}\nPlataforma: ${plat}\nAnálise do QA: ${ana}`;
+                else if(stg==='5') txt = `Teste realizado com sucesso.\n${cP}Versão app: ${ver}\nNúmero de tentativas: ${att}\nPlataforma: ${plat}`;
+                setVal('errorResult', txt);
             },
-            insertRaidiamText: function() { document.getElementById('errorAnalysis').value = "Boa tarde, o teste foi realizado pelo usuário mas apresentou erro."; this.updateErrorReport(); },
+            insertRaidiamText: function() { setVal('errorAnalysis', "Boa tarde, o teste foi realizado pelo usuário mas apresentou erro."); this.updateErrorReport(); },
             getStored: () => JSON.parse(localStorage.getItem('qa_scheduler_v2') || '[]'),
             saveTest: function() { 
-                const d = { id: Date.now(), brand: document.getElementById('agendaMarca').value, seg: document.getElementById('agendaSegmento').value, type: document.getElementById('agendaTipo').value, start: document.getElementById('agendaInicio').value, end: document.getElementById('agendaFim').value, desc: document.getElementById('agendaInstrucoes').value };
-                if(!d.brand || !d.type || !d.start) { this.showToast("Preencha os campos!", "error"); return; }
-                const data = this.getStored(); data.push(d); localStorage.setItem('qa_scheduler_v2', JSON.stringify(data)); this.renderTable(); this.showToast('Salvo!');
+                const d={id:Date.now(), brand:getVal('agendaMarca'), seg:getVal('agendaSegmento'), type:getVal('agendaTipo'), start:getVal('agendaInicio'), end:getVal('agendaFim'), desc:getVal('agendaInstrucoes')};
+                if(!d.brand || !d.type || !d.start) return this.showToast("Preencha!", "error");
+                const dt = this.getStored(); dt.push(d); localStorage.setItem('qa_scheduler_v2', JSON.stringify(dt)); this.renderTable(); this.showToast('Salvo!');
             },
-            deleteTest: function(id) { if(confirm("Remover?")) { const data = this.getStored().filter(t => t.id !== id); localStorage.setItem('qa_scheduler_v2', JSON.stringify(data)); this.renderTable(); } },
+            deleteTest: function(id) { if(confirm("Remover?")){ const dt=this.getStored().filter(t=>t.id!==id); localStorage.setItem('qa_scheduler_v2', JSON.stringify(dt)); this.renderTable(); } },
             renderTable: function() { 
-                const data = this.getStored().sort((a,b) => new Date(a.start) - new Date(b.start));
-                const tbody = document.getElementById('scheduleTable'); tbody.innerHTML = '';
-                if(data.length===0) { tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Vazio.</td></tr>`; return; }
-                data.forEach(t => {
-                    const badge = t.seg==='PF' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300';
-                    const fmt = s => s.split('-').reverse().slice(0,2).join('/');
-                    tbody.innerHTML += `<tr class="bg-white border-b border-gray-100 dark:bg-slate-800 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/50"><td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">${t.brand}</td><td class="px-6 py-4"><span class="${badge} text-xs font-bold px-3 py-1 rounded-full">${t.seg}</span></td><td class="px-6 py-4 text-gray-600 dark:text-gray-300">${t.type}</td><td class="px-6 py-4 text-gray-600 dark:text-gray-300 font-mono text-xs">${fmt(t.start)}</td><td class="px-6 py-4 text-gray-600 dark:text-gray-300 font-mono text-xs">${fmt(t.end)}</td><td class="px-6 py-4 text-right"><button onclick="app.deleteTest(${t.id})" class="text-gray-400 hover:text-red-500 p-2"><i data-lucide="trash-2" size="18"></i></button></td></tr>`;
-                });
-                lucide.createIcons();
+                const dt = this.getStored().sort((a,b)=>new Date(a.start)-new Date(b.start));
+                const tb = getEl('scheduleTable'); tb.innerHTML = '';
+                if(!dt.length) { tb.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Vazio.</td></tr>`; return; }
+                dt.forEach(t => {
+                    const bg = t.seg==='PF'?'bg-blue-100 text-blue-700':'bg-pink-100 text-pink-700'; const f = s=>s.split('-').reverse().slice(0,2).join('/');
+                    tb.innerHTML += `<tr class="bg-white border-b border-gray-100 dark:bg-slate-800 dark:border-slate-700"><td class="px-6 py-4 font-semibold">${t.brand}</td><td class="px-6 py-4"><span class="${bg} text-xs font-bold px-3 py-1 rounded-full">${t.seg}</span></td><td class="px-6 py-4 text-gray-600 dark:text-gray-300">${t.type}</td><td class="px-6 py-4 font-mono text-xs">${f(t.start)}</td><td class="px-6 py-4 font-mono text-xs">${f(t.end)}</td><td class="px-6 py-4 text-right"><button onclick="app.deleteTest(${t.id})" class="text-gray-400 hover:text-red-500"><i data-lucide="trash-2" size="18"></i></button></td></tr>`;
+                }); lucide.createIcons();
             },
             openGoogleCalendar: function() { 
-                const m = document.getElementById('agendaMarca').value; const t = document.getElementById('agendaTipo').value; const f = document.getElementById('agendaFim').value; const d = document.getElementById('agendaInstrucoes').value;
-                if (!f) return this.showToast("Data final não definida!", "error");
-                const endObj = new Date(f + 'T12:00:00'); const startStr = endObj.toISOString().slice(0,10).replace(/-/g, ''); endObj.setDate(endObj.getDate() + 1); const endStr = endObj.toISOString().slice(0,10).replace(/-/g, '');
-                window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`FINALIZAR: ${m} - ${t}`)}&dates=${startStr}/${endStr}&details=${encodeURIComponent(d)}`, '_blank');
+                const m=getVal('agendaMarca'), t=getVal('agendaTipo'), f=getVal('agendaFim'), d=getVal('agendaInstrucoes'); if(!f) return this.showToast("Sem Data fim!", "error");
+                const eo = new Date(f+'T12:00:00'); const sStr = eo.toISOString().slice(0,10).replace(/-/g,''); eo.setDate(eo.getDate()+1); const eStr = eo.toISOString().slice(0,10).replace(/-/g,'');
+                window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`FINALIZAR: ${m} - ${t}`)}&dates=${sStr}/${eStr}&details=${encodeURIComponent(d)}`, '_blank');
             },
             exportData: function() { 
-                const d = localStorage.getItem('qa_scheduler_v2'); if(!d || d==='[]') return this.showToast("Nada.", "error");
-                const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([d], {type:'application/json'})); a.download = `backup_${new Date().toISOString().slice(0,10)}.json`; a.click();
+                const d=localStorage.getItem('qa_scheduler_v2'); if(!d||d==='[]') return this.showToast("Nada.", "error");
+                const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([d],{type:'application/json'})); a.download=`backup_${new Date().toISOString().slice(0,10)}.json`; a.click();
             },
             exportExcel: function() { 
-                const d = this.getStored(); if(!d.length) return this.showToast("Nada.", "error");
-                let csv = "\uFEFFMarca;Segmento;Teste;Inicio;Fim;Detalhes\n"; d.forEach(t => csv += `${t.brand};${t.seg};${t.type};${t.start};${t.end};"${t.desc.replace(/\n/g,' ')}"\n`);
-                const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'})); a.download = `relatorio.csv`; a.click();
+                const d=this.getStored(); if(!d.length) return this.showToast("Nada.", "error");
+                let csv="\uFEFFMarca;Segmento;Teste;Inicio;Fim;Detalhes\n"; d.forEach(t=>csv+=`${t.brand};${t.seg};${t.type};${t.start};${t.end};"${t.desc.replace(/\n/g,' ')}"\n`);
+                const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='relatorio.csv'; a.click();
             },
             importData: function(inp) { 
-                const f = inp.files[0]; if(!f) return;
-                const r = new FileReader();
-                r.onload = e => { try { localStorage.setItem('qa_scheduler_v2', JSON.stringify(JSON.parse(e.target.result))); this.renderTable(); this.showToast("Restaurado!"); } catch(err) { this.showToast("Inválido", "error"); } };
-                r.readAsText(f);
+                const f=inp.files[0]; if(!f) return; const r=new FileReader();
+                r.onload = e => { try{ localStorage.setItem('qa_scheduler_v2', JSON.stringify(JSON.parse(e.target.result))); this.renderTable(); this.showToast("Restaurado!"); } catch(err){ this.showToast("Inválido","error"); } inp.value=""; }; r.readAsText(f);
             }
         };
 
-        // ==========================================
-        // MÓDULO: JSON CHICAGO (API PAYLOADS)
-        // ==========================================
         const chicago = {
-            validaCPF: function(cpf) {
-                cpf = cpf.replace(/\D/g, '');
-                if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
-                let soma = 0, resto;
-                for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i-1, i)) * (11 - i);
-                resto = (soma * 10) % 11;
-                if ((resto === 10) || (resto === 11)) resto = 0;
-                if (resto !== parseInt(cpf.substring(9, 10))) return false;
-                soma = 0;
-                for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i-1, i)) * (12 - i);
-                resto = (soma * 10) % 11;
-                if ((resto === 10) || (resto === 11)) resto = 0;
-                if (resto !== parseInt(cpf.substring(10, 11))) return false;
-                return true;
-            },
-            validaCNPJ: function(cnpj) {
-                cnpj = cnpj.replace(/\D/g, '');
-                if (cnpj.length !== 14 || /^(\d)\1{13}$/.test(cnpj)) return false;
-                let tamanho = cnpj.length - 2;
-                let numeros = cnpj.substring(0, tamanho);
-                let digitos = cnpj.substring(tamanho);
-                let soma = 0;
-                let pos = tamanho - 7;
-                for (let i = tamanho; i >= 1; i--) { soma += numeros.charAt(tamanho - i) * pos--; if (pos < 2) pos = 9; }
-                let resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
-                if (resultado != digitos.charAt(0)) return false;
-                tamanho = tamanho + 1;
-                numeros = cnpj.substring(0, tamanho);
-                soma = 0;
-                pos = tamanho - 7;
-                for (let i = tamanho; i >= 1; i--) { soma += numeros.charAt(tamanho - i) * pos--; if (pos < 2) pos = 9; }
-                resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
-                if (resultado != digitos.charAt(1)) return false;
-                return true;
-            },
-
-            getCampos: function() {
-                return {
-                    usuario: document.getElementById('chi_usuario').value,
-                    cpf: document.getElementById('chi_cpf').value,
-                    cnpj: document.getElementById('chi_cnpj').value,
-                    empresa: document.getElementById('chi_empresa').value,
-                    ispb: document.getElementById('chi_ispb').value,
-                    ispbpj: document.getElementById('chi_ispbpj').value,
-                    issuer: document.getElementById('chi_issuer').value,
-                    issuerpj: document.getElementById('chi_issuerpj').value,
-                    conta: document.getElementById('chi_conta').value,
-                    contapj: document.getElementById('chi_contapj').value,
-                    tipo: document.getElementById('chi_tipo').value.toUpperCase(),
-                    tipopj: document.getElementById('chi_tipopj').value.toUpperCase()
-                };
-            },
-
+            validaCPF: function(c) { c=c.replace(/\D/g,''); if(c.length!==11||/^(\d)\1{10}$/.test(c)) return false; let s=0,r; for(let i=1;i<=9;i++)s+=parseInt(c[i-1])*(11-i); r=(s*10)%11; if(r===10||r===11)r=0; if(r!==parseInt(c[9])) return false; s=0; for(let i=1;i<=10;i++)s+=parseInt(c[i-1])*(12-i); r=(s*10)%11; if(r===10||r===11)r=0; return r===parseInt(c[10]); },
+            validaCNPJ: function(c) { c=c.replace(/\D/g,''); if(c.length!==14||/^(\d)\1{13}$/.test(c)) return false; let t=12,n=c.substring(0,t),d=c.substring(t),s=0,p=t-7; for(let i=t;i>=1;i--){ s+=n.charAt(t-i)*p--; if(p<2)p=9; } let res=s%11<2?0:11-s%11; if(res!=d.charAt(0)) return false; t=13; n=c.substring(0,t); s=0; p=t-7; for(let i=t;i>=1;i--){ s+=n.charAt(t-i)*p--; if(p<2)p=9; } res=s%11<2?0:11-s%11; return res==d.charAt(1); },
+            getCampos: function() { return { usuario:getVal('chi_usuario'), cpf:getVal('chi_cpf'), cnpj:getVal('chi_cnpj'), empresa:getVal('chi_empresa'), ispb:getVal('chi_ispb'), ispbpj:getVal('chi_ispbpj'), issuer:getVal('chi_issuer'), issuerpj:getVal('chi_issuerpj'), conta:getVal('chi_conta'), contapj:getVal('chi_contapj'), tipo:getVal('chi_tipo').toUpperCase(), tipopj:getVal('chi_tipopj').toUpperCase() }; },
             saveSession: function(silent = false) {
-                const dados = this.getCampos();
-                if(!silent) {
-                    if(dados.cpf && !this.validaCPF(dados.cpf)) { app.showToast("CPF Inválido!", "error"); return false; }
-                    if(dados.cnpj && !this.validaCNPJ(dados.cnpj)) { app.showToast("CNPJ Inválido!", "error"); return false; }
-                    app.showToast("Dados salvos no navegador!");
-                }
-                localStorage.setItem('chicago_session', JSON.stringify(dados));
-                return true;
+                const d = this.getCampos();
+                if(!silent) { if(d.cpf && !this.validaCPF(d.cpf)) return app.showToast("CPF Inválido!","error"); if(d.cnpj && !this.validaCNPJ(d.cnpj)) return app.showToast("CNPJ Inválido!","error"); app.showToast("Salvo!"); }
+                localStorage.setItem('chicago_session', JSON.stringify(d)); return true;
             },
-
             loadSession: function() {
-                const s = JSON.parse(localStorage.getItem('chicago_session') || '{}');
-                if(Object.keys(s).length === 0) return;
-                
-                document.getElementById('chi_usuario').value = s.usuario || "";
-                document.getElementById('chi_cpf').value = s.cpf || "";
-                document.getElementById('chi_cnpj').value = s.cnpj || "";
-                document.getElementById('chi_empresa').value = s.empresa || "";
-                document.getElementById('chi_ispb').value = s.ispb || "";
-                document.getElementById('chi_ispbpj').value = s.ispbpj || "";
-                document.getElementById('chi_issuer').value = s.issuer || "";
-                document.getElementById('chi_issuerpj').value = s.issuerpj || "";
-                document.getElementById('chi_conta').value = s.conta || "";
-                document.getElementById('chi_contapj').value = s.contapj || "";
-                document.getElementById('chi_tipo').value = s.tipo || "";
-                document.getElementById('chi_tipopj').value = s.tipopj || "";
+                const s = JSON.parse(localStorage.getItem('chicago_session')||'{}'); if(!Object.keys(s).length) return;
+                ['usuario','cpf','cnpj','empresa','ispb','ispbpj','issuer','issuerpj','conta','contapj','tipo','tipopj'].forEach(k=>setVal('chi_'+k, s[k]));
             },
-
             exportSession: function() {
-                this.saveSession(true);
-                const d = localStorage.getItem('chicago_session');
-                if(!d || d === '{}') return app.showToast("Nada para exportar", "error");
-                const b = new Blob([d], {type:'application/json'});
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(b);
-                a.download = `chicago_backup_${new Date().toISOString().slice(0,10)}.json`;
-                a.click();
+                this.saveSession(true); const d=localStorage.getItem('chicago_session'); if(!d||d==='{}') return app.showToast("Nada","error");
+                const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([d],{type:'application/json'})); a.download=`chicago_backup_${new Date().toISOString().slice(0,10)}.json`; a.click();
             },
-
             importSession: function(inp) {
-                const f = inp.files[0];
-                if(!f) return;
-                const r = new FileReader();
-                r.onload = e => {
-                    try {
-                        const j = JSON.parse(e.target.result);
-                        if(confirm("Substituir dados atuais pelo backup importado?")) {
-                            localStorage.setItem('chicago_session', JSON.stringify(j));
-                            this.loadSession();
-                            app.showToast("Backup restaurado!");
-                        }
-                    } catch(err) { app.showToast("Arquivo inválido", "error"); }
-                    inp.value = ""; 
-                };
-                r.readAsText(f);
+                const f=inp.files[0]; if(!f) return; const r=new FileReader();
+                r.onload = e => { try{ if(confirm("Substituir?")){ localStorage.setItem('chicago_session', JSON.stringify(JSON.parse(e.target.result))); this.loadSession(); app.showToast("Restaurado!"); } } catch(err){ app.showToast("Inválido","error"); } inp.value=""; }; r.readAsText(f);
             },
-
-            outputJson: function(obj) {
-                const str = JSON.stringify(obj, null, 4);
-                document.getElementById('chi_result').value = str;
-                app.copyText('chi_result');
-            },
-
-            generateFromSelect: function() {
-                const segment = document.getElementById('chi_select_segment').value; 
-                const test = document.getElementById('chi_select_test').value; 
-                const typeToGenerate = `${test}_${segment}`; 
-                this.generate(typeToGenerate);
-            },
-
+            generateFromSelect: function() { this.generate(`${getVal('chi_select_test')}_${getVal('chi_select_segment')}`); },
             generate: function(type) {
                 if(!this.saveSession(true)) return; 
+                const d=this.getCampos(), ali=getVal('chi_alias'), asid=getVal('chi_as_id');
+                if(!d.cpf) return app.showToast("CPF obrigatório", "error"); if(type.includes('pj') && !d.cnpj) return app.showToast("CNPJ obrigatório", "error");
                 
-                const d = this.getCampos();
-                const aliasVal = document.getElementById('chi_alias').value;
-                const asIdVal = document.getElementById('chi_as_id').value;
+                let p = { "alias": ali, "server": { "authorisationServerId": asid }, "resource": {}, "directory": {} };
+                let r = { loggedUserIdentification: d.cpf };
                 
-                if(!d.cpf) { app.showToast("O campo CPF é obrigatório na Configuração.", "error"); return; }
-                if(type.includes('pj') && !d.cnpj) { app.showToast("O campo CNPJ é obrigatório para payloads PJ.", "error"); return; }
+                if (type.includes('pj')) { r.businessEntityIdentification = d.cnpj; r.brazilCnpj = d.cnpj; }
+                if (type.startsWith('sweeping')) { r.creditorAccountIspb = type.includes('pj')?d.ispbpj:d.ispb; r.creditorAccountIssuer = type.includes('pj')?d.issuerpj:d.issuer; r.creditorAccountNumber = type.includes('pj')?d.contapj:d.conta; r.creditorAccountAccountType = type.includes('pj')?d.tipopj:d.tipo; r.creditorName = type.includes('pj')?d.empresa:d.usuario; r.brazilCpf = d.cpf; }
+                else { r.creditorAccountIspb="18236120"; r.creditorAccountIssuer="0001"; r.creditorAccountNumber="8360375143"; r.creditorAccountAccountType="TRAN"; r.creditorName="JSR SERVICE LTDA"; r.creditorCpfCnpj="63602987000134"; r.brazilCpf=d.cpf; }
+                
+                if (type.startsWith('payments_') || type.startsWith('scheduling_') || type.startsWith('no_redirect_auto_novo') || type.startsWith('no_redirect_auto_sched_novo')) { r.contractDebtorName = d.usuario; r.contractDebtorIdentification = d.cpf; }
+                if (type.startsWith('redirect_') || type.startsWith('e2e_') || type.startsWith('no_redirect_sched_novo')) r.creditorProxy = "1b25f9c3-8c4c-4491-b67f-10cf007d500c";
 
-                let payload = {
-                    "alias": aliasVal,
-                    "server": {
-                        "authorisationServerId": asIdVal
-                    },
-                    "resource": {},
-                    "directory": {}
-                };
-
-                switch(type) {
-                    
-                    // ==============================
-                    // PESSOA FÍSICA (PF)
-                    // ==============================
-                    case 'sweeping_pf':
-                        payload.resource = {
-                            loggedUserIdentification: d.cpf,
-                            creditorAccountIspb: d.ispb,
-                            creditorAccountIssuer: d.issuer,
-                            creditorAccountNumber: d.conta,
-                            creditorAccountAccountType: d.tipo,
-                            creditorName: d.usuario,
-                            brazilCpf: d.cpf
-                        };
-                        break;
-
-                    case 'payments_pf': 
-                    case 'scheduling_pf': 
-                        payload.resource = {
-                            loggedUserIdentification: d.cpf,
-                            contractDebtorName: d.usuario,
-                            contractDebtorIdentification: d.cpf,
-                            creditorAccountIspb: "18236120",
-                            creditorAccountIssuer: "0001",
-                            creditorAccountNumber: "8360375143",
-                            creditorAccountAccountType: "TRAN",
-                            creditorName: "JSR SERVICE LTDA",
-                            creditorCpfCnpj: "63602987000134",
-                            brazilCpf: d.cpf
-                        };
-                        break;
-
-                    case 'redirect_pf': 
-                        payload.resource = {
-                            loggedUserIdentification: d.cpf,
-                            contractDebtorIdentification: d.cpf,
-                            creditorAccountIspb: "18236120",
-                            creditorAccountIssuer: "0001",
-                            creditorAccountNumber: "8360375143",
-                            creditorAccountAccountType: "TRAN",
-                            creditorName: "JSR SERVICE LTDA",
-                            creditorCpfCnpj: "63602987000134",
-                            creditorProxy: "1b25f9c3-8c4c-4491-b67f-10cf007d500c",
-                            brazilCpf: d.cpf
-                        };
-                        break;
-
-                    case 'e2e_pf':
-                        payload.resource = {
-                            loggedUserIdentification: d.cpf,
-                            creditorAccountIspb: "18236120",
-                            creditorAccountIssuer: "0001",
-                            creditorAccountNumber: "8360375143",
-                            creditorAccountAccountType: "TRAN",
-                            creditorName: "JSR SERVICE LTDA",
-                            creditorCpfCnpj: "63602987000134",
-                            creditorProxy: "1b25f9c3-8c4c-4491-b67f-10cf007d500c",
-                            brazilCpf: d.cpf
-                        };
-                        break;
-
-                    case 'no_redirect_auto_sched_novo_pf':
-                    case 'no_redirect_auto_novo_pf':
-                        payload.resource = {
-                            loggedUserIdentification: d.cpf,
-                            contractDebtorName: d.usuario,
-                            contractDebtorIdentification: d.cpf,
-                            creditorAccountIspb: "18236120",
-                            creditorAccountIssuer: "0001",
-                            creditorAccountNumber: "8360375143",
-                            creditorAccountAccountType: "TRAN",
-                            creditorName: "JSR SERVICE LTDA",
-                            creditorCpfCnpj: "63602987000134",
-                            brazilCpf: d.cpf
-                        };
-                        break;
-
-                    case 'no_redirect_pix_novo_pf':
-                        payload = {
-                            "alias": aliasVal,
-                            "server": {
-                                "authorisationServerId": asIdVal
-                            },
-                            "resource": {
-                                loggedUserIdentification: d.cpf,
-                                creditorAccountIspb: "18236120",
-                                creditorAccountIssuer: "0001",
-                                creditorAccountNumber: "8360375143",
-                                creditorAccountAccountType: "TRAN",
-                                creditorName: "JSR SERVICE LTDA",
-                                creditorCpfCnpj: "63602987000134",
-                                brazilCpf: d.cpf
-                            }
-                        };
-                        break;
-
-                    case 'no_redirect_sched_novo_pf':
-                        payload.resource = {
-                            loggedUserIdentification: d.cpf,
-                            creditorAccountIspb: "18236120",
-                            creditorAccountIssuer: "0001",
-                            creditorAccountNumber: "8360375143",
-                            creditorAccountAccountType: "TRAN",
-                            creditorName: "JSR SERVICE LTDA",
-                            creditorCpfCnpj: "63602987000134",
-                            creditorProxy: "1b25f9c3-8c4c-4491-b67f-10cf007d500c",
-                            brazilCpf: d.cpf
-                        };
-                        break;
-                    
-                    // ==============================
-                    // PESSOA JURÍDICA (PJ)
-                    // ==============================
-                    case 'sweeping_pj':
-                        payload.resource = {
-                            loggedUserIdentification: d.cpf,
-                            businessEntityIdentification: d.cnpj,
-                            creditorAccountIspb: d.ispbpj,
-                            creditorAccountIssuer: d.issuerpj,
-                            creditorAccountNumber: d.contapj,
-                            creditorAccountAccountType: d.tipopj,
-                            creditorName: d.empresa,
-                            brazilCpf: d.cpf,
-                            brazilCnpj: d.cnpj
-                        };
-                        break;
-
-                    case 'payments_pj': 
-                    case 'scheduling_pj':
-                        payload.resource = {
-                            loggedUserIdentification: d.cpf,
-                            businessEntityIdentification: d.cnpj,
-                            contractDebtorName: d.usuario,
-                            contractDebtorIdentification: d.cpf,
-                            creditorAccountIspb: "18236120",
-                            creditorAccountIssuer: "0001",
-                            creditorAccountNumber: "8360375143",
-                            creditorAccountAccountType: "TRAN",
-                            creditorName: "JSR SERVICE LTDA",
-                            creditorCpfCnpj: "63602987000134",
-                            brazilCpf: d.cpf,
-                            brazilCnpj: d.cnpj
-                        };
-                        break;
-
-                    case 'redirect_pj': 
-                    case 'e2e_pj':
-                        payload.resource = {
-                            loggedUserIdentification: d.cpf,
-                            businessEntityIdentification: d.cnpj,
-                            creditorAccountIspb: "18236120",
-                            creditorAccountIssuer: "0001",
-                            creditorAccountNumber: "8360375143",
-                            creditorAccountAccountType: "TRAN",
-                            creditorName: "JSR SERVICE LTDA",
-                            creditorCpfCnpj: "63602987000134",
-                            creditorProxy: "1b25f9c3-8c4c-4491-b67f-10cf007d500c",
-                            brazilCpf: d.cpf,
-                            brazilCnpj: d.cnpj
-                        };
-                        break;
-
-                    case 'no_redirect_auto_sched_novo_pj':
-                    case 'no_redirect_auto_novo_pj':
-                        payload.resource = {
-                            loggedUserIdentification: d.cpf,
-                            contractDebtorName: d.usuario,
-                            contractDebtorIdentification: d.cpf,
-                            creditorAccountIspb: "18236120",
-                            creditorAccountIssuer: "0001",
-                            creditorAccountNumber: "8360375143",
-                            creditorAccountAccountType: "TRAN",
-                            creditorName: "JSR SERVICE LTDA",
-                            creditorCpfCnpj: "63602987000134",
-                            brazilCpf: d.cpf,
-                            businessEntityIdentification: d.cnpj,
-                            brazilCnpj: d.cnpj
-                        };
-                        break;
-
-                    case 'no_redirect_pix_novo_pj':
-                        payload = {
-                            "alias": aliasVal,
-                            "server": {
-                                "authorisationServerId": asIdVal
-                            },
-                            "resource": {
-                                loggedUserIdentification: d.cpf,
-                                creditorAccountIspb: "18236120",
-                                creditorAccountIssuer: "0001",
-                                creditorAccountNumber: "8360375143",
-                                creditorAccountAccountType: "TRAN",
-                                creditorName: "JSR SERVICE LTDA",
-                                creditorCpfCnpj: "63602987000134",
-                                brazilCpf: d.cpf,
-                                businessEntityIdentification: d.cnpj,
-                                brazilCnpj: d.cnpj
-                            }
-                        };
-                        break;
-
-                    case 'no_redirect_sched_novo_pj':
-                        payload.resource = {
-                            loggedUserIdentification: d.cpf,
-                            businessEntityIdentification: d.cnpj,
-                            creditorAccountIspb: "18236120",
-                            creditorAccountIssuer: "0001",
-                            creditorAccountNumber: "8360375143",
-                            creditorAccountAccountType: "TRAN",
-                            creditorName: "JSR SERVICE LTDA",
-                            creditorCpfCnpj: "63602987000134",
-                            creditorProxy: "1b25f9c3-8c4c-4491-b67f-10cf007d500c", 
-                            brazilCpf: d.cpf,
-                            brazilCnpj: d.cnpj
-                        };
-                        break;
-                }
-
-                this.outputJson(payload);
+                p.resource = r;
+                setVal('chi_result', JSON.stringify(p, null, 4)); app.copyText('chi_result');
             }
         };
 
-        // INICIALIZAR SISTEMA GERAL
         document.addEventListener('DOMContentLoaded', () => app.init());
     </script>
 </body>
