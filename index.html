@@ -66,7 +66,7 @@
             </p>
         </div>
     </div>
-    
+
     <aside class="w-72 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700 flex flex-col z-20 hidden md:flex transition-colors duration-300 h-full">
         <div class="p-8 shrink-0">
             <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-3">
@@ -111,15 +111,6 @@
         </div>
     </aside>
 
-    <div class="md:hidden fixed top-0 w-full bg-white dark:bg-slate-800 z-50 px-6 py-4 flex justify-between items-center border-b border-gray-200 dark:border-slate-700 shadow-sm">
-        <span class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
-            <i data-lucide="layers" class="text-primary-500" size="20"></i> GestorServiços
-        </span>
-        <button onclick="document.querySelector('aside').classList.toggle('hidden'); document.querySelector('aside').classList.toggle('absolute'); document.querySelector('aside').classList.toggle('h-full'); document.querySelector('aside').classList.toggle('w-full');" class="text-gray-600 dark:text-gray-300 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700">
-            <i data-lucide="menu"></i>
-        </button>
-    </div>
-
     <main class="flex-1 overflow-y-auto p-4 md:p-10 relative mt-16 md:mt-0 scroll-smooth custom-scrollbar">
         
         <div id="toast" class="fixed top-6 right-6 z-50 translate-x-[120%] opacity-0 transition-all duration-500 ease-out flex items-center w-full max-w-sm p-4 text-gray-600 bg-white rounded-xl shadow-2xl dark:text-gray-300 dark:bg-slate-800 border-l-4 border-green-500 backdrop-blur-sm" role="alert">
@@ -136,28 +127,29 @@
             <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden ring-1 ring-black/5">
                 <div class="px-8 py-5 border-b border-gray-200 dark:border-slate-700 flex justify-between items-center bg-gray-50/50 dark:bg-slate-800">
                     <div><h2 class="text-lg font-bold text-gray-900 dark:text-white">Gerador de Nomenclatura</h2><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Padronização de logs de execução.</p></div>
-                    <button onclick="app.generateLog()" class="px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg shadow-lg shadow-primary-500/20 transition-all active:scale-95 flex items-center gap-2"><i data-lucide="wand-2" size="18"></i> Gerar Log</button>
+                    <button onclick="app.generateLog()" class="px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg shadow-lg flex items-center gap-2"><i data-lucide="wand-2" size="18"></i> Gerar Log</button>
                 </div>
                 <div class="p-8 grid grid-cols-1 md:grid-cols-12 gap-6">
-                    <div class="md:col-span-6 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Teste Realizado</label><input list="listTestes" id="logTeste" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary-500/50 outline-none dark:text-white" oninput="app.checkSync()"><datalist id="listTestes"></datalist></div>
-                    <div class="md:col-span-3 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">SO</label><select id="logSO" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary-500/50 outline-none dark:text-white"><option>Android</option><option>iOS</option><option>Desktop</option></select></div>
-                    <div class="md:col-span-3 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Data</label><input type="date" id="logData" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary-500/50 outline-none dark:text-white dark:[color-scheme:dark]" onchange="app.checkSync()"></div>
+                    <div class="md:col-span-6 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Teste Realizado</label><input list="listTestes" id="logTeste" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none dark:text-white" oninput="app.checkSync()"><datalist id="listTestes"></datalist></div>
+                    <div class="md:col-span-3 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">SO</label><select id="logSO" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm outline-none dark:text-white"><option>Android</option><option>iOS</option><option>Desktop</option></select></div>
+                    <div class="md:col-span-3 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Data</label><input type="date" id="logData" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm outline-none dark:text-white dark:[color-scheme:dark]" onchange="app.checkSync()"></div>
+                    
                     <div class="md:col-span-6 space-y-2">
                         <label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Marca</label>
-                        <input list="listMarcas" id="logMarca" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary-500/50 outline-none dark:text-white" oninput="app.syncEvidences(); app.checkSync(); app.consultarPlayStore();">
+                        <input list="listMarcas" id="logMarca" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none dark:text-white" oninput="app.syncEvidences(); app.checkSync(); app.preencherVersaoInterna();">
                         <datalist id="listMarcas"></datalist>
                     </div>
-                    <div class="md:col-span-3 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Segmento</label><select id="logSegmento" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary-500/50 outline-none dark:text-white" onchange="app.syncEvidences(); app.checkSync()"><option>PF</option><option>PJ</option></select></div>
+
+                    <div class="md:col-span-3 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Segmento</label><select id="logSegmento" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm outline-none dark:text-white" onchange="app.syncEvidences(); app.checkSync()"><option>PF</option><option>PJ</option></select></div>
                     <div class="md:col-span-3 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</label><select id="logStatus" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-bold dark:text-white" onchange="app.checkSync()"><option class="text-green-500">OK</option><option class="text-red-500">NOK</option><option class="text-yellow-500">DCR</option></select></div>
                 </div>
-                <div id="logGroup" class="hidden border-t border-gray-200 dark:border-slate-700 bg-gray-50/80 dark:bg-slate-900/30 p-6"><div class="flex shadow-sm"><div id="logResult" class="relative flex-grow flex items-center px-4 py-3.5 text-sm font-mono text-primary-600 dark:text-primary-400 bg-white dark:bg-slate-950 border border-gray-200 dark:border-slate-700 rounded-l-xl border-r-0 truncate select-all">...</div><button onclick="app.copyText('logResult')" class="inline-flex items-center gap-2 rounded-r-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-6 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all border-l"><i data-lucide="copy" size="16"></i> Copiar</button></div></div>
+                <div id="logGroup" class="hidden border-t border-gray-200 dark:border-slate-700 bg-gray-50/80 dark:bg-slate-900/30 p-6"><div class="flex shadow-sm"><div id="logResult" class="relative flex-grow flex items-center px-4 py-3.5 text-sm font-mono text-primary-600 dark:text-primary-400 bg-white dark:bg-slate-950 border border-gray-200 dark:border-slate-700 rounded-l-xl border-r-0 truncate select-all">...</div><button onclick="app.copyText('logResult')" class="inline-flex items-center gap-2 rounded-r-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-6 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 transition-all border-l"><i data-lucide="copy" size="16"></i> Copiar</button></div></div>
             </div>
             <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden ring-1 ring-black/5">
                 <div class="px-8 py-5 border-b border-gray-200 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-800"><h2 class="text-lg font-bold text-gray-900 dark:text-white">Nomenclatura de Evidência</h2></div>
                 <div class="p-8 space-y-5">
-                    <div class="group"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 block">Saldo</label><div class="flex shadow-sm hover:shadow-md cursor-pointer" onclick="app.copyText('evResult1')"><div id="evResult1" class="flex-grow px-4 py-3 text-sm font-mono text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-l-xl border-r-0 truncate flex items-center">Aguardando...</div><button class="rounded-r-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 text-gray-400 group-hover:text-primary-500 transition-colors border-l"><i data-lucide="copy" size="18"></i></button></div></div>
-                    <div class="group"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 block">Versão App</label><div class="flex shadow-sm hover:shadow-md cursor-pointer" onclick="app.copyText('evResult2')"><div id="evResult2" class="flex-grow px-4 py-3 text-sm font-mono text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-l-xl border-r-0 truncate flex items-center">Aguardando...</div><button class="rounded-r-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 text-gray-400 group-hover:text-primary-500 transition-colors border-l"><i data-lucide="copy" size="18"></i></button></div></div>
-                    <div class="group"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 block">Erro</label><div class="flex shadow-sm hover:shadow-md cursor-pointer" onclick="app.copyText('evResult3')"><div id="evResult3" class="flex-grow px-4 py-3 text-sm font-mono text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-l-xl border-r-0 truncate flex items-center">Aguardando...</div><button class="rounded-r-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 text-gray-400 group-hover:text-primary-500 transition-colors border-l"><i data-lucide="copy" size="18"></i></button></div></div>
+                    <div class="group" onclick="app.copyText('evResult1')"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-2">Saldo</label><div id="evResult1" class="px-4 py-3 text-sm font-mono bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl cursor-pointer">Aguardando...</div></div>
+                    <div class="group" onclick="app.copyText('evResult2')"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-2">Versão App</label><div id="evResult2" class="px-4 py-3 text-sm font-mono bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl cursor-pointer">Aguardando...</div></div>
                 </div>
             </div>
         </div>
@@ -190,32 +182,30 @@
         </div>
 
         <div id="view-relatorios" class="hidden fade-in space-y-8 max-w-6xl mx-auto">
-            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden ring-1 ring-black/5">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
                 <div class="px-8 py-5 border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 flex justify-between items-center w-full">
                     <div>
                         <h2 class="text-lg font-bold text-gray-900 dark:text-white">Gerador de Relatórios</h2>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Padronização de resultados (NOK / OK).</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Gere o JSON da Play Store internamente.</p>
                     </div>
-                    <button onclick="app.consultarPlayStore()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-sm transition-all flex items-center gap-2">
-                        <i data-lucide="refresh-cw" size="18"></i> Consultar Play Store
+                    <button id="btnConsultarLoja" onclick="app.gerarJsonPlayStore()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-sm transition-all flex items-center gap-2">
+                        <i data-lucide="refresh-cw" size="18"></i> Atualizar Toda a Loja (JSON)
                     </button>
                 </div>
                 <div class="p-8 grid grid-cols-1 md:grid-cols-12 gap-6">
-                    <div class="md:col-span-12 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Qual o status/etapa do teste?</label><select id="errorStage" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-white" onchange="app.updateErrorReport()"><option value="1">1. Erro: Antes do Redirecionamento</option><option value="2">2. Erro: Durante Autenticação/Login</option><option value="3">3. Erro: Durante Consentimento</option><option value="4">4. Erro: Retorno FVP (Erro Final)</option><option value="5" class="text-green-600 font-bold">5. Teste Realizado com Sucesso (OK)</option></select></div>
-                    <div class="md:col-span-4 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Versão do App</label><input type="text" id="errorVersion" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-white disabled:opacity-50" placeholder="Ex: 8.5.0" oninput="app.updateErrorReport()"></div>
+                    <div class="md:col-span-12 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Etapa do teste?</label><select id="errorStage" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-white" onchange="app.updateErrorReport()"><option value="1">1. Erro: Antes do Redirecionamento</option><option value="2">2. Erro: Autenticação/Login</option><option value="3">3. Erro: Consentimento</option><option value="4">4. Erro: Retorno FVP</option><option value="5">5. Teste Realizado com Sucesso (OK)</option></select></div>
+                    <div class="md:col-span-4 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Versão do App</label><input type="text" id="errorVersion" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-white" placeholder="Será preenchido..." oninput="app.updateErrorReport()"></div>
                     <div class="md:col-span-4 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nº Tentativas</label><input type="number" id="errorAttempts" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-white" value="3" oninput="app.updateErrorReport()"></div>
                     <div class="md:col-span-4 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Plataforma</label><select id="errorPlatform" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-white" onchange="app.updateErrorReport()"><option>Android</option><option>iOS</option><option>Desktop</option></select></div>
-                    <div class="md:col-span-12 space-y-2" id="analysisContainer"><div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Análise do QA</label><button onclick="app.insertRaidiamText()" class="text-xs text-primary-600 font-semibold flex items-center gap-1"><i data-lucide="plus-circle" size="14"></i> Texto Raidiam</button></div><textarea id="errorAnalysis" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-mono h-24 resize-none dark:text-gray-300" oninput="app.updateErrorReport()"></textarea></div>
                 </div>
-                <div class="border-t border-gray-200 dark:border-slate-700 bg-gray-50/80 dark:bg-slate-900/30 p-6">
-                    <label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 block">Preview</label>
-                    <div class="relative"><textarea id="errorResult" readonly class="w-full p-4 text-sm font-mono text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-950 border border-gray-200 dark:border-slate-700 rounded-xl h-48 resize-none"></textarea><button onclick="app.copyText('errorResult')" class="absolute top-3 right-3 px-4 py-2 bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 text-xs font-bold rounded-lg border border-gray-200 dark:border-slate-600 flex items-center gap-2"><i data-lucide="copy" size="14"></i> Copiar</button></div>
+                <div class="p-6 border-t border-gray-200 dark:border-slate-700">
+                    <textarea id="errorResult" readonly class="w-full p-4 text-sm font-mono text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-950 border border-gray-200 dark:border-slate-700 rounded-xl h-48 resize-none"></textarea>
+                    <button onclick="app.copyText('errorResult')" class="mt-4 w-full py-3 bg-primary-600 text-white rounded-xl font-bold flex items-center justify-center gap-2"><i data-lucide="copy" size="18"></i> Copiar Relatório</button>
                 </div>
             </div>
         </div>
 
         <div id="view-chicago" class="hidden fade-in space-y-8 max-w-7xl mx-auto">
-            
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-4">
                     <div class="p-3 bg-chicago-800 rounded-xl shadow-lg shadow-chicago-800/30 text-white"><i data-lucide="braces" size="24"></i></div>
@@ -224,47 +214,20 @@
                         <p class="text-sm text-gray-500 dark:text-gray-400">Geração de massa de dados para testes de Open Finance.</p>
                     </div>
                 </div>
-                
                 <div class="flex items-center gap-2">
-                    <button onclick="chicago.exportSession()" class="px-3 py-2 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 shadow-sm transition flex items-center gap-2">
-                        <i data-lucide="download" size="16"></i> Backup Local
-                    </button>
-                    <button onclick="document.getElementById('chi_importFile').click()" class="px-3 py-2 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 shadow-sm transition flex items-center gap-2">
-                        <i data-lucide="upload" size="16"></i> Restaurar
-                    </button>
+                    <button onclick="chicago.exportSession()" class="px-3 py-2 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 shadow-sm transition flex items-center gap-2"><i data-lucide="download" size="16"></i> Backup Local</button>
+                    <button onclick="document.getElementById('chi_importFile').click()" class="px-3 py-2 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 shadow-sm transition flex items-center gap-2"><i data-lucide="upload" size="16"></i> Restaurar</button>
                     <input type="file" id="chi_importFile" accept=".json" class="hidden" onchange="chicago.importSession(this)">
                 </div>
             </div>
 
-            <div id="releaseNote" class="bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 rounded-2xl p-5 relative fade-in">
-                <button onclick="document.getElementById('releaseNote').style.display='none'" class="absolute top-4 right-4 text-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors">
-                    <i data-lucide="x" size="20"></i>
-                </button>
-                <div class="flex gap-4">
-                    <div class="mt-1 bg-indigo-100 dark:bg-indigo-500/20 p-2.5 rounded-xl text-indigo-600 dark:text-indigo-400 shrink-0 h-min">
-                        <i data-lucide="bell-ring" size="22"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-indigo-900 dark:text-indigo-300 text-sm md:text-base uppercase tracking-wider">📣 Novidades da Versão 5.7</h4>
-                        <ul class="text-sm text-indigo-800 dark:text-indigo-200 mt-2 space-y-1.5 list-disc list-inside ml-1">
-                            <li>O campo <strong>creditorProxy</strong> foi removido exclusivamente do teste <em>No Redirect Automatic Pix Payments Scheduling V2.2</em> (PF e PJ).</li>
-                            <li>Novo botão adicionado no menu lateral para acesso rápido à <strong>Documentação wiki OP</strong>.</li>
-                            <li>Os campos Alias e AS-ID continuam facilitando a troca ágil sem salvar no backup.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
             <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
-                
                 <div class="xl:col-span-4 space-y-6">
                     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden ring-1 ring-black/5">
                         <div class="px-6 py-4 border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 flex justify-between items-center">
                             <h3 class="font-bold text-gray-900 dark:text-white flex items-center gap-2"><i data-lucide="database" size="18" class="text-primary-500"></i> Configuração de Dados</h3>
-                            <button onclick="chicago.saveSession()" class="text-xs px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 shadow-sm transition flex items-center gap-1.5 font-medium">
-                                <i data-lucide="save" size="14"></i> Salvar 
-                            </button>
+                            <button onclick="chicago.saveSession()" class="text-xs px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 shadow-sm transition flex items-center gap-1.5 font-medium"><i data-lucide="save" size="14"></i> Salvar </button>
                         </div>
-                        
                         <div class="p-6 max-h-[600px] overflow-y-auto space-y-8 custom-scrollbar">
                             <div class="space-y-4">
                                 <h4 class="text-sm font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider border-b border-gray-200 dark:border-slate-700 pb-2 flex items-center gap-2"><i data-lucide="user" size="16"></i> Pessoa Física (PF)</h4>
@@ -279,7 +242,6 @@
                                     <div><label class="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">Tipo de Conta</label><input type="text" id="chi_tipo" class="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-lg text-sm dark:text-white uppercase" oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')" placeholder="Ex: TRAN"></div>
                                 </div>
                             </div>
-
                             <div class="space-y-4 pt-4 border-t border-gray-200 dark:border-slate-700">
                                 <h4 class="text-sm font-bold text-pink-600 dark:text-pink-400 uppercase tracking-wider pb-2 flex items-center gap-2"><i data-lucide="building-2" size="16"></i> Pessoa Jurídica (PJ)</h4>
                                 <div><label class="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">Nome da Empresa</label><input type="text" id="chi_empresa" class="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-lg text-sm dark:text-white"></div>
@@ -298,91 +260,52 @@
                 </div>
 
                 <div class="xl:col-span-8 space-y-6 flex flex-col">
-                    
                     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden flex-shrink-0">
                         <div class="p-6 bg-gradient-to-r from-gray-50 to-white dark:from-slate-800 dark:to-slate-800/80 border-b border-gray-200 dark:border-slate-700 space-y-4">
-                            
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4 border-b border-gray-200 dark:border-slate-700/50">
-                                <div>
-                                    <label class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block mb-1">Alias</label>
-                                    <input type="text" id="chi_alias" class="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none dark:text-white shadow-sm" placeholder="Ex: alias-teste">
-                                </div>
-                                <div>
-                                    <label class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block mb-1">AS-ID (Auth Server)</label>
-                                    <input type="text" id="chi_as_id" class="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none dark:text-white shadow-sm" placeholder="Ex: 12345-abcde">
-                                </div>
+                                <div><label class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block mb-1">Alias</label><input type="text" id="chi_alias" class="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none dark:text-white shadow-sm" placeholder="Ex: alias-teste"></div>
+                                <div><label class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block mb-1">AS-ID (Auth Server)</label><input type="text" id="chi_as_id" class="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none dark:text-white shadow-sm" placeholder="Ex: 12345-abcde"></div>
                             </div>
-
                             <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-                                
-                                <div class="md:col-span-2">
-                                    <label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-2">Seg.</label>
-                                    <select id="chi_select_segment" class="w-full px-3 py-3 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-primary-500 outline-none dark:text-white cursor-pointer shadow-sm">
-                                        <option value="pf">PF</option>
-                                        <option value="pj">PJ</option>
-                                    </select>
-                                </div>
-
+                                <div class="md:col-span-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-2">Seg.</label><select id="chi_select_segment" class="w-full px-3 py-3 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-primary-500 outline-none dark:text-white cursor-pointer shadow-sm"><option value="pf">PF</option><option value="pj">PJ</option></select></div>
                                 <div class="md:col-span-7">
                                     <label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-2">Tipo de Teste (Payload)</label>
                                     <select id="chi_select_test" class="w-full px-3 py-3 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-xl text-[12px] md:text-[13px] font-medium focus:ring-2 focus:ring-primary-500 outline-none dark:text-white cursor-pointer shadow-sm truncate">
-                                        
                                         <option value="sweeping">Production Funcional Tests For Automatic Sweeping Payments</option>
                                         <option value="payments">Production Functional Testes for Automatic Pix Payments</option>
                                         <option value="scheduling">Production Functional Tests For Automatic Pix Payments Scheduling</option>
                                         <option value="e2e">Production Funcional Tests For Payments E2E - API Version 4</option>
-                                        
                                         <option disabled value="" class="font-bold text-gray-400 dark:text-gray-600 text-center">──────────────── NOVOS TESTES ────────────────</option>
-
                                         <option value="no_redirect_auto_novo" class="text-primary-700 dark:text-primary-400 font-bold">Production Funcional Tests For No Redirect Automatic Pix Payments - API Version 2.2</option>
                                         <option value="no_redirect_pix_novo" class="text-primary-700 dark:text-primary-400 font-bold">Production Funcional Tests For No Redirect Payments - API Version 2.2</option>
                                         <option value="no_redirect_auto_sched_novo" class="text-primary-700 dark:text-primary-400 font-bold">Production Funcional Tests For no Redirect Automatic Pix Payments Scheduling - API Version 2.2</option>
                                         <option value="no_redirect_sched_novo" class="text-primary-700 dark:text-primary-400 font-bold">Production Funcional Tests For No Redirect Payments Scheduling - API Version 2.2</option>
-                                        
                                     </select>
                                 </div>
-
-                                <div class="md:col-span-3">
-                                    <button onclick="chicago.generateFromSelect()" class="w-full px-4 py-3 bg-gray-900 hover:bg-black dark:bg-primary-600 dark:hover:bg-primary-500 text-white text-sm font-bold rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
-                                        <i data-lucide="zap" size="18"></i> Gerar JSON
-                                    </button>
-                                </div>
-
+                                <div class="md:col-span-3"><button onclick="chicago.generateFromSelect()" class="w-full px-4 py-3 bg-gray-900 hover:bg-black dark:bg-primary-600 dark:hover:bg-primary-500 text-white text-sm font-bold rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"><i data-lucide="zap" size="18"></i> Gerar JSON</button></div>
                             </div>
                         </div>
                     </div>
-
                     <div class="bg-[#1e1e1e] rounded-2xl shadow-xl flex-1 flex flex-col overflow-hidden relative border border-gray-800 min-h-[400px]">
-                        <div class="px-5 py-3 bg-[#2d2d2d] flex justify-between items-center border-b border-black">
-                            <span class="text-xs font-mono text-gray-400 flex items-center gap-2"><i data-lucide="terminal" size="14"></i> payload_request.json</span>
-                            <button onclick="app.copyText('chi_result')" class="text-xs font-bold text-gray-300 hover:text-white flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-1.5 rounded-lg transition">
-                                <i data-lucide="copy" size="14"></i> Copiar Código
-                            </button>
-                        </div>
+                        <div class="px-5 py-3 bg-[#2d2d2d] flex justify-between items-center border-b border-black"><span class="text-xs font-mono text-gray-400 flex items-center gap-2"><i data-lucide="terminal" size="14"></i> payload_request.json</span><button onclick="app.copyText('chi_result')" class="text-xs font-bold text-gray-300 hover:text-white flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-1.5 rounded-lg transition"><i data-lucide="copy" size="14"></i> Copiar Código</button></div>
                         <textarea id="chi_result" readonly class="flex-1 w-full bg-transparent text-green-400 font-mono text-sm p-6 resize-none outline-none custom-scrollbar" placeholder="// Preencha os campos e clique em Gerar JSON..."></textarea>
                     </div>
-
                 </div>
             </div>
-
-            <div class="mt-12 pt-6 border-t border-gray-200 dark:border-slate-800 text-center pb-8">
-                <p class="text-xs text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1.5 font-medium">
-                    <i data-lucide="code-2" size="14" class="text-primary-500"></i>
-                    Módulo desenvolvido por <span class="font-bold text-gray-700 dark:text-gray-300">Ygor Jardim</span>
-                </p>
-            </div>
-
+            <div class="mt-12 pt-6 border-t border-gray-200 dark:border-slate-800 text-center pb-8"><p class="text-xs text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1.5 font-medium"><i data-lucide="code-2" size="14" class="text-primary-500"></i> Módulo desenvolvido por <span class="font-bold text-gray-700 dark:text-gray-300">Ygor Jardim</span></p></div>
         </div>
 
     </main>
 
     <script>
         const DB = {
-            marcas: ["ABC","Accreditto","Ailos","Ame Digital","Asaas","Azimut","Banco do Brasil","Banco do Nordeste","Banrisul","Bari","BMG","Bradesco","BRB","BTG Banking","BV","C6","Caixa","Celcoin","Cielo","Cora","Digio","Efí","Genial","Geru","Getnet","Hyundai","Infinite Pay","Inter","Itaú","Iti","Iugu","Listo","Master","Mei Fácil","Mercado Pago","Mercantil","Midway","Modal","Méliuz","Neon","Next","Nubank","Original","PagBank","Pan","Pic Pay","PlayersBank","Quero Quero Pag","Randon","RecargaPay","Rico","Safra","Santander","Sicoob","Sicredi","Sofisa","Stone","Super Digital","Uber Conta","Up.P","Volvo","WillBank","XP","Ágora Investimentos","Íon","BTG Investimentos","Santander Cartões","Santander Financiamentos","Santander Crédito Imob","Empréstimo Sim","Santander Corretora","Bradescard","Investimentos BB","Toro","Ourocard","BTG Empresas","Iniciador.com","Google Pay","Lina Openx","Banco Industrial","Pernambucanas","Rede","Porto Bank","WHG","MagaluPay","Monte Bravo","Klavi","Mobilize Financial","CrediNissan","Belvo","Àgora Investimento","Crefisa"],
-            testes: ["Pix Scheduling 1-2", "JSR Pix Verification 1-2", "Pix Retry 1-3", "Consents V3", "Accounts V3", "Debtor V4", "Not Cancelled V4", "Resources", "Unique", "Custom Core V4", "Real Email Invalid V4", "Fake Email Proxy V4", "SWP Total Allowed", "SWP Accounts Core", "Payments Core V2.2", "Invalid Challenge V2.2", "Invalid Origin V2.2", "Invalid Public Key V2.2", "Invalid RPID V2.2", "Pre-Enrollment V2.2", "Invalid Status V2.2", "Keys Swap V2.2", "Unmatching Fields V2.2", "APX Semanal", "APX Scheduled", "Authorised Executed", "Limits Negative", "Limits", "Not Authorised"]
+            marcas: ["ABC","Ailos","Ame Digital","Asaas","Banco do Brasil","Banco do Nordeste","Banrisul","Bari","BMG","Bradesco","BRB","BTG Banking","BV","C6","Caixa","Cielo","Cora","Digio","Efí","Inter","Itaú","Iti","Mercado Pago","Neon","Next","Nubank","PagBank","Pan","Pic Pay","Santander","Sicoob","Sicredi","Stone","WillBank","XP"],
+            testes: ["Pix Scheduling 1-2", "JSR Pix Verification 1-2", "Pix Retry 1-3", "Consents V3", "Accounts V3"]
         };
 
         const app = {
+            versoesLoja: {}, // Memória interna (Cache)
+
             init: function() {
                 this.verifyAuthStatus();
                 this.populateLists();
@@ -399,16 +322,37 @@
                     document.documentElement.classList.remove('dark');
                 }
 
+                // Carrega o JSON que estiver salvo na memória do navegador
+                const cacheJson = localStorage.getItem('versoes_playstore_cache');
+                if (cacheJson) {
+                    this.versoesLoja = JSON.parse(cacheJson);
+                }
+
                 this.switchTab('chicago'); 
                 chicago.loadSession(); 
             },
 
             // ==========================================
-            // LÓGICA DA PLAY STORE DIRETA (PROXY)
+            // LÓGICA DA PLAY STORE DIRETA (INTERNA)
             // ==========================================
-            consultarPlayStore: async function() {
+            
+            // 1. Busca rápida apenas na memória local (Instantâneo)
+            preencherVersaoInterna: function() {
                 const marca = document.getElementById('logMarca').value;
                 const campoVersao = document.getElementById('errorVersion');
+                
+                if (this.versoesLoja && this.versoesLoja[marca]) {
+                    campoVersao.value = this.versoesLoja[marca];
+                    this.updateErrorReport();
+                } else if (marca) {
+                    campoVersao.value = "Use o botão Atualizar Loja";
+                }
+            },
+
+            // 2. Busca Master (Varre a loja devagar para não bloquear e gera o JSON)
+            gerarJsonPlayStore: async function() {
+                const btn = document.getElementById('btnConsultarLoja');
+                const btnTextOriginal = btn ? btn.innerHTML : '';
                 
                 const IDS = {
                     "ABC": "br.com.abcbrasil.bancoabcbrasil", "Ailos": "br.com.ailos.app", "Ame Digital": "br.com.amedigital.ame",
@@ -425,31 +369,66 @@
                     "WillBank": "br.com.willbank.app", "XP": "br.com.xp.carteira"
                 };
 
-                const packageId = IDS[marca];
-                if (!packageId) return;
+                const marcas = Object.keys(IDS);
+                let jsonResultado = {};
 
-                // Não apaga a versão se o usuário já digitou manualmente
-                if(campoVersao.value && campoVersao.value !== "Consultando..." && campoVersao.value !== "Erro") return;
-
-                campoVersao.value = "Consultando...";
+                this.showToast(`Iniciando varredura lenta e segura de ${marcas.length} apps...`, "success");
                 
-                try {
-                    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent('https://play.google.com/store/apps/details?id=' + packageId + '&hl=pt_BR')}`;
-                    const response = await fetch(proxyUrl);
-                    const data = await response.json();
-                    const html = data.contents;
-
-                    const match = html.match(/\[\[\["([\d\.]+)"\]\]/) || html.match(/AF_initDataCallback\({key: 'ds:5'.*?data:\[\[\["([\d\.]+)"\]\]/);
-                    
-                    if (match && match[1]) {
-                        campoVersao.value = match[1];
-                    } else {
-                        campoVersao.value = "Varia por disp.";
-                    }
-                    this.updateErrorReport();
-                } catch (e) {
-                    campoVersao.value = "Erro";
+                if (btn) {
+                    btn.disabled = true;
+                    btn.classList.add('opacity-50', 'cursor-not-allowed');
                 }
+
+                // Loop LENTO
+                for (let i = 0; i < marcas.length; i++) {
+                    const marca = marcas[i];
+                    const packageId = IDS[marca];
+                    
+                    if(btn) {
+                        btn.innerHTML = `<i class="animate-spin" data-lucide="loader-2" size="18"></i> Lendo ${marca} (${i+1}/${marcas.length})`;
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                    }
+
+                    try {
+                        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent('https://play.google.com/store/apps/details?id=' + packageId + '&hl=pt_BR')}`;
+                        const response = await fetch(proxyUrl);
+                        const data = await response.json();
+                        const html = data.contents;
+
+                        const match = html.match(/\[\[\["([\d\.]+)"\]\]/) || html.match(/AF_initDataCallback\({key: 'ds:5'.*?data:\[\[\["([\d\.]+)"\]\]/);
+                        
+                        jsonResultado[marca] = (match && match[1]) ? match[1] : "Varia por disp.";
+
+                    } catch (e) {
+                        jsonResultado[marca] = "Erro de Leitura";
+                    }
+
+                    // A MÁGICA DE NÃO SER BLOQUEADO: Espera 2.5 segundos (2500 ms) entre cada consulta
+                    await new Promise(resolve => setTimeout(resolve, 2500));
+                }
+
+                // Salva internamente
+                this.versoesLoja = jsonResultado;
+                localStorage.setItem('versoes_playstore_cache', JSON.stringify(jsonResultado));
+
+                // Baixa o arquivo para o QA
+                const blob = new Blob([JSON.stringify(jsonResultado, null, 4)], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `versoes_playstore_${new Date().toISOString().slice(0,10)}.json`;
+                a.click();
+
+                // Finaliza a interface
+                if (btn) {
+                    btn.innerHTML = btnTextOriginal;
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }
+                
+                this.preencherVersaoInterna();
+                this.showToast("JSON Gerado e salvo na memória!", "success");
             },
 
             // ==========================================
