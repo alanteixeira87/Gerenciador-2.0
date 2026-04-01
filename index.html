@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Gestor de Serviços | QA Suite</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        primary: { 50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' },
+                        slate: { 800: '#1e293b', 900: '#0f172a' },
+                        chicago: { 800: '#330309', 900: '#200105' } 
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
+        .dark .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+        
+        /* Fundo desfocado para o Login */
+        .blur-bg { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-gray-100 h-screen flex overflow-hidden transition-colors duration-300 selection:bg-primary-500 selection:text-white">
+
+    <div id="loginOverlay" class="fixed inset-0 z-[100] bg-slate-900/80 blur-bg flex items-center justify-center p-4 transition-opacity duration-500">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl p-8 w-full max-w-sm border border-gray-200 dark:border-slate-700 text-center transform transition-transform">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-100 dark:bg-primary-500/10 mb-5 shadow-inner">
+                <i data-lucide="shield-check" class="text-primary-600 dark:text-primary-400" size="32"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Acesso Restrito</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 mb-8">Insira a senha da equipe de QA para acessar o Gestor de Serviços.</p>
+            
+            <div class="space-y-4">
+                <input type="password" id="passInput" class="w-full px-4 py-3.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-xl text-lg focus:ring-2 focus:ring-primary-500 outline-none dark:text-white text-center tracking-[0.3em] font-mono transition-all" placeholder="••••••••" onkeypress="if(event.key === 'Enter') app.checkLogin()">
+                <button onclick="app.checkLogin()" class="w-full px-4 py-3.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-primary-500/30 transition-all active:scale-95 flex items-center justify-center gap-2">
+                    Desbloquear <i data-lucide="arrow-right" size="16"></i>
+                </button>
+            </div>
+            <p id="loginError" class="text-xs text-red-500 mt-4 hidden font-medium flex items-center justify-center gap-1">
+                <i data-lucide="alert-circle" size="14"></i> Senha incorreta. Tente novamente.
+            </p>
+        </div>
+    </div>
+    <aside class="w-72 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-slate-700 flex flex-col z-20 hidden md:flex transition-colors duration-300 h-full">
+        <div class="p-8 shrink-0">
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-3">
+                <div class="p-2 bg-primary-100 dark:bg-primary-500/10 rounded-lg">
+                    <i data-lucide="layers" class="text-primary-600 dark:text-primary-400"></i>
+                </div>
+                <div>Gestor<span class="text-primary-600 dark:text-primary-400">Serviços</span></div>
+            </h1>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-2 font-medium">QA Automation Suite v5.7</p>
+        </div>
+
+        <nav class="flex-1 px-6 space-y-2 overflow-y-auto custom-scrollbar">
+            <div class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3 mt-4 px-4">Testes FVP</div>
+            <button onclick="app.switchTab('nomenclatura')" id="nav-nomenclatura" class="group w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200">
+                <i data-lucide="file-signature" size="20"></i> Nomenclatura
+            </button>
+            <button onclick="app.switchTab('agendamentos')" id="nav-agendamentos" class="group w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200">
+                <i data-lucide="calendar-clock" size="20"></i> Agendamentos
+            </button>
+            <button onclick="app.switchTab('relatorios')" id="nav-relatorios" class="group w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200">
+                <i data-lucide="clipboard-list" size="20"></i> Relatórios
+            </button>
+
+            <div class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3 mt-8 px-4">Testes API</div>
+            <button onclick="app.switchTab('chicago')" id="nav-chicago" class="group w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200">
+                <i data-lucide="braces" size="20"></i> Gerador de JSON
+            </button>
+
+            <div class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3 mt-8 px-4">Links Úteis</div>
+            <a href="https://gitlab.com/raidiam-conformance/open-finance/certification/-/wikis/Orientacoes_Execucao_FVP?redirected_from=Scheduled-Tests-[PT]" target="_blank" class="group w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700/50 transition-all duration-200">
+                <i data-lucide="external-link" size="20"></i> Documentação wiki OP
+            </a>
+        </nav>
+
+        <div class="p-6 border-t border-gray-200 dark:border-slate-700 shrink-0">
+            <button onclick="app.toggleTheme()" class="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-slate-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 transition-all">
+                <span class="flex items-center gap-2"><i data-lucide="moon" size="18"></i> Aparência</span>
+                <div class="w-10 h-5 bg-gray-300 dark:bg-primary-600 rounded-full relative transition-colors">
+                    <div class="absolute top-1 left-1 bg-white w-3 h-3 rounded-full transition-transform dark:translate-x-5"></div>
+                </div>
+            </button>
+        </div>
+    </aside>
+
+    <div class="md:hidden fixed top-0 w-full bg-white dark:bg-slate-800 z-50 px-6 py-4 flex justify-between items-center border-b border-gray-200 dark:border-slate-700 shadow-sm">
+        <span class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
+            <i data-lucide="layers" class="text-primary-500" size="20"></i> GestorServiços
+        </span>
+        <button onclick="document.querySelector('aside').classList.toggle('hidden'); document.querySelector('aside').classList.toggle('absolute'); document.querySelector('aside').classList.toggle('h-full'); document.querySelector('aside').classList.toggle('w-full');" class="text-gray-600 dark:text-gray-300 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700">
+            <i data-lucide="menu"></i>
+        </button>
+    </div>
+
+    <main class="flex-1 overflow-y-auto p-4 md:p-10 relative mt-16 md:mt-0 scroll-smooth custom-scrollbar">
+        
+        <div id="toast" class="fixed top-6 right-6 z-50 translate-x-[120%] opacity-0 transition-all duration-500 ease-out flex items-center w-full max-w-sm p-4 text-gray-600 bg-white rounded-xl shadow-2xl dark:text-gray-300 dark:bg-slate-800 border-l-4 border-green-500 backdrop-blur-sm" role="alert">
+            <div id="toast-icon-bg" class="inline-flex items-center justify-center flex-shrink-0 w-9 h-9 text-green-500 bg-green-100 rounded-lg dark:bg-green-500/20 dark:text-green-400">
+                <i id="toast-icon" data-lucide="check-circle-2" size="20"></i>
+            </div>
+            <div class="ml-4">
+                <h4 id="toast-title" class="text-sm font-semibold text-gray-900 dark:text-white">Sucesso!</h4>
+                <div class="text-xs font-medium mt-0.5" id="toast-msg">Operação realizada.</div>
+            </div>
+        </div>
+
+        <div id="view-nomenclatura" class="hidden fade-in space-y-8 max-w-6xl mx-auto">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden ring-1 ring-black/5">
+                <div class="px-8 py-5 border-b border-gray-200 dark:border-slate-700 flex justify-between items-center bg-gray-50/50 dark:bg-slate-800">
+                    <div><h2 class="text-lg font-bold text-gray-900 dark:text-white">Gerador de Nomenclatura</h2><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Padronização de logs de execução.</p></div>
+                    <button onclick="app.generateLog()" class="px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg shadow-lg shadow-primary-500/20 transition-all active:scale-95 flex items-center gap-2"><i data-lucide="wand-2" size="18"></i> Gerar Log</button>
+                </div>
+                <div class="p-8 grid grid-cols-1 md:grid-cols-12 gap-6">
+                    <div class="md:col-span-6 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Teste Realizado</label><input list="listTestes" id="logTeste" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary-500/50 outline-none dark:text-white" oninput="app.checkSync()"><datalist id="listTestes"></datalist></div>
+                    <div class="md:col-span-3 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">SO</label><select id="logSO" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary-500/50 outline-none dark:text-white"><option>Android</option><option>iOS</option><option>Desktop</option></select></div>
+                    <div class="md:col-span-3 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Data</label><input type="date" id="logData" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary-500/50 outline-none dark:text-white dark:[color-scheme:dark]" onchange="app.checkSync()"></div>
+                    <div class="md:col-span-6 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Marca</label><input list="listMarcas" id="logMarca" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary-500/50 outline-none dark:text-white" oninput="app.syncEvidences(); app.checkSync(); app.preencherVersaoApp();"><datalist id="listMarcas"></datalist></div>
+                    <div class="md:col-span-3 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Segmento</label><select id="logSegmento" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary-500/50 outline-none dark:text-white" onchange="app.syncEvidences(); app.checkSync()"><option>PF</option><option>PJ</option></select></div>
+                    <div class="md:col-span-3 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</label><select id="logStatus" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-bold dark:text-white" onchange="app.checkSync()"><option class="text-green-500">OK</option><option class="text-red-500">NOK</option><option class="text-yellow-500">DCR</option></select></div>
+                </div>
+                <div id="logGroup" class="hidden border-t border-gray-200 dark:border-slate-700 bg-gray-50/80 dark:bg-slate-900/30 p-6"><div class="flex shadow-sm"><div id="logResult" class="relative flex-grow flex items-center px-4 py-3.5 text-sm font-mono text-primary-600 dark:text-primary-400 bg-white dark:bg-slate-950 border border-gray-200 dark:border-slate-700 rounded-l-xl border-r-0 truncate select-all">...</div><button onclick="app.copyText('logResult')" class="inline-flex items-center gap-2 rounded-r-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-6 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all border-l"><i data-lucide="copy" size="16"></i> Copiar</button></div></div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden ring-1 ring-black/5">
+                <div class="px-8 py-5 border-b border-gray-200 dark:border-slate-700 bg-gray-50/50 dark:bg-slate-800"><h2 class="text-lg font-bold text-gray-900 dark:text-white">Nomenclatura de Evidência</h2></div>
+                <div class="p-8 space-y-5">
+                    <div class="group"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 block">Saldo</label><div class="flex shadow-sm hover:shadow-md cursor-pointer" onclick="app.copyText('evResult1')"><div id="evResult1" class="flex-grow px-4 py-3 text-sm font-mono text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-l-xl border-r-0 truncate flex items-center">Aguardando...</div><button class="rounded-r-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 text-gray-400 group-hover:text-primary-500 transition-colors border-l"><i data-lucide="copy" size="18"></i></button></div></div>
+                    <div class="group"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 block">Versão App</label><div class="flex shadow-sm hover:shadow-md cursor-pointer" onclick="app.copyText('evResult2')"><div id="evResult2" class="flex-grow px-4 py-3 text-sm font-mono text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-l-xl border-r-0 truncate flex items-center">Aguardando...</div><button class="rounded-r-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 text-gray-400 group-hover:text-primary-500 transition-colors border-l"><i data-lucide="copy" size="18"></i></button></div></div>
+                    <div class="group"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 block">Erro</label><div class="flex shadow-sm hover:shadow-md cursor-pointer" onclick="app.copyText('evResult3')"><div id="evResult3" class="flex-grow px-4 py-3 text-sm font-mono text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-l-xl border-r-0 truncate flex items-center">Aguardando...</div><button class="rounded-r-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 text-gray-400 group-hover:text-primary-500 transition-colors border-l"><i data-lucide="copy" size="18"></i></button></div></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-agendamentos" class="hidden fade-in space-y-8 max-w-6xl mx-auto">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden ring-1 ring-black/5">
+                <div class="px-8 py-5 border-b border-gray-200 dark:border-slate-700 flex justify-between items-center bg-gray-50/50 dark:bg-slate-800">
+                    <div><h2 class="text-lg font-bold text-gray-900 dark:text-white">Novo Agendamento</h2><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Planejamento de testes de longa duração.</p></div>
+                    <div class="flex gap-3"><button onclick="app.saveTest()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg shadow-sm"><i data-lucide="save" size="18"></i> Salvar</button><button id="btnGoogle" onclick="app.openGoogleCalendar()" disabled class="px-4 py-2 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-white text-sm font-semibold rounded-lg shadow-sm"><i data-lucide="calendar-plus" size="18"></i> Google</button></div>
+                </div>
+                <div class="p-8 grid grid-cols-1 md:grid-cols-12 gap-6">
+                    <div class="md:col-span-6 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Marca</label><input list="listMarcas" id="agendaMarca" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-white"></div>
+                    <div class="md:col-span-3 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Segmento</label><select id="agendaSegmento" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-white"><option>PF</option><option>PJ</option></select></div>
+                    <div class="md:col-span-3 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Teste</label><select id="agendaTipo" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-white"><option value="" disabled selected>Selecione...</option><option>Pix Scheduling 1-2</option><option>JSR Pix Verification 1-2</option><option>Pix Retry 1-3</option></select></div>
+                    <div class="md:col-span-3 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Data Início</label><input type="date" id="agendaInicio" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-white dark:[color-scheme:dark]"></div>
+                    <div class="md:col-span-3 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Data Fim (Auto)</label><input type="date" id="agendaFim" readonly class="w-full px-4 py-3 bg-gray-100 dark:bg-slate-950 border border-gray-200 dark:border-slate-700 rounded-xl text-sm opacity-60 cursor-not-allowed dark:text-gray-400 dark:[color-scheme:dark]"></div>
+                    <div class="md:col-span-12 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Cronograma Detalhado</label><textarea id="agendaInstrucoes" readonly class="w-full px-4 py-3 bg-gray-100 dark:bg-slate-950 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-mono opacity-80 h-32 resize-none dark:text-gray-300"></textarea></div>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden ring-1 ring-black/5">
+                <div class="px-8 py-5 border-b border-gray-200 dark:border-slate-700 flex justify-between items-center bg-gray-50/50 dark:bg-slate-800">
+                    <h3 class="font-bold text-gray-900 dark:text-white">Agendamentos Ativos</h3>
+                    <div class="flex gap-2"><button onclick="app.exportData()" class="p-2 text-gray-500 hover:text-primary-600 rounded-lg"><i data-lucide="download" size="20"></i></button><button onclick="app.exportExcel()" class="p-2 text-gray-500 hover:text-green-600 rounded-lg"><i data-lucide="file-spreadsheet" size="20"></i></button></div>
+                </div>
+                <div class="overflow-x-auto"><table class="w-full text-sm text-left text-gray-500 dark:text-gray-400"><thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-slate-900/50 dark:text-gray-400 border-b border-gray-200 dark:border-slate-700"><tr><th class="px-6 py-4">Marca</th><th class="px-6 py-4">Segmento</th><th class="px-6 py-4">Teste</th><th class="px-6 py-4">Início</th><th class="px-6 py-4">Fim</th><th class="px-6 py-4 text-right">Ações</th></tr></thead><tbody id="scheduleTable" class="divide-y divide-gray-100 dark:divide-slate-700"></tbody></table></div>
+            </div>
+            <div class="border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-2xl p-10 text-center hover:border-primary-500 transition-all cursor-pointer" onclick="document.getElementById('importFile').click()">
+                <div class="flex flex-col items-center gap-3"><i data-lucide="upload-cloud" class="text-gray-400" size="28"></i><p class="text-sm font-semibold text-gray-900 dark:text-white">Restaurar Dados</p><input type="file" id="importFile" accept=".json" class="hidden" onchange="app.importData(this)"></div>
+            </div>
+        </div>
+
+        <div id="view-relatorios" class="hidden fade-in space-y-8 max-w-6xl mx-auto">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden ring-1 ring-black/5">
+                <div class="px-8 py-5 border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 flex justify-between items-center w-full">
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Gerador de Relatórios</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Padronização de resultados (NOK / OK).</p>
+                    </div>
+                    <button id="btnAtualizarLoja" onclick="app.dispararRoboGithub()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-sm transition-all flex items-center gap-2">
+                        <i data-lucide="refresh-cw" size="18"></i> Consultar Play Store
+                    </button>
+                </div>
+                <div class="p-8 grid grid-cols-1 md:grid-cols-12 gap-6">
+                    <div class="md:col-span-12 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Qual o status/etapa do teste?</label><select id="errorStage" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-white" onchange="app.updateErrorReport()"><option value="1">1. Erro: Antes do Redirecionamento</option><option value="2">2. Erro: Durante Autenticação/Login</option><option value="3">3. Erro: Durante Consentimento</option><option value="4">4. Erro: Retorno FVP (Erro Final)</option><option value="5" class="text-green-600 font-bold">5. Teste Realizado com Sucesso (OK)</option></select></div>
+                    <div class="md:col-span-4 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Versão do App</label><input type="text" id="errorVersion" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-white disabled:opacity-50" placeholder="Ex: 8.5.0" oninput="app.updateErrorReport()"></div>
+                    <div class="md:col-span-4 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nº Tentativas</label><input type="number" id="errorAttempts" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-white" value="3" oninput="app.updateErrorReport()"></div>
+                    <div class="md:col-span-4 space-y-2"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Plataforma</label><select id="errorPlatform" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-white" onchange="app.updateErrorReport()"><option>Android</option><option>iOS</option><option>Desktop</option></select></div>
+                    <div class="md:col-span-12 space-y-2" id="analysisContainer"><div class="flex justify-between items-center"><label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Análise do QA</label><button onclick="app.insertRaidiamText()" class="text-xs text-primary-600 font-semibold flex items-center gap-1"><i data-lucide="plus-circle" size="14"></i> Texto Raidiam</button></div><textarea id="errorAnalysis" class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-mono h-24 resize-none dark:text-gray-300" oninput="app.updateErrorReport()"></textarea></div>
+                </div>
+                <div class="border-t border-gray-200 dark:border-slate-700 bg-gray-50/80 dark:bg-slate-900/30 p-6">
+                    <label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 block">Preview</label>
+                    <div class="relative"><textarea id="errorResult" readonly class="w-full p-4 text-sm font-mono text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-950 border border-gray-200 dark:border-slate-700 rounded-xl h-48 resize-none"></textarea><button onclick="app.copyText('errorResult')" class="absolute top-3 right-3 px-4 py-2 bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 text-xs font-bold rounded-lg border border-gray-200 dark:border-slate-600 flex items-center gap-2"><i data-lucide="copy" size="14"></i> Copiar</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-chicago" class="hidden fade-in space-y-8 max-w-7xl mx-auto">
+            
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-chicago-800 rounded-xl shadow-lg shadow-chicago-800/30 text-white"><i data-lucide="braces" size="24"></i></div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Gerador JSON Chicago</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Geração de massa de dados para testes de Open Finance.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <button onclick="chicago.exportSession()" class="px-3 py-2 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 shadow-sm transition flex items-center gap-2">
+                        <i data-lucide="download" size="16"></i> Backup Local
+                    </button>
+                    <button onclick="document.getElementById('chi_importFile').click()" class="px-3 py-2 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 shadow-sm transition flex items-center gap-2">
+                        <i data-lucide="upload" size="16"></i> Restaurar
+                    </button>
+                    <input type="file" id="chi_importFile" accept=".json" class="hidden" onchange="chicago.importSession(this)">
+                </div>
+            </div>
+
+            <div id="releaseNote" class="bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 rounded-2xl p-5 relative fade-in">
+                <button onclick="document.getElementById('releaseNote').style.display='none'" class="absolute top-4 right-4 text-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors">
+                    <i data-lucide="x" size="20"></i>
+                </button>
+                <div class="flex gap-4">
+                    <div class="mt-1 bg-indigo-100 dark:bg-indigo-500/20 p-2.5 rounded-xl text-indigo-600 dark:text-indigo-400 shrink-0 h-min">
+                        <i data-lucide="bell-ring" size="22"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-indigo-900 dark:text-indigo-300 text-sm md:text-base uppercase tracking-wider">📣 Novidades da Versão 5.7</h4>
+                        <ul class="text-sm text-indigo-800 dark:text-indigo-200 mt-2 space-y-1.5 list-disc list-inside ml-1">
+                            <li>O campo <strong>creditorProxy</strong> foi removido exclusivamente do teste <em>No Redirect Automatic Pix Payments Scheduling V2.2</em> (PF e PJ).</li>
+                            <li>Novo botão adicionado no menu lateral para acesso rápido à <strong>Documentação wiki OP</strong>.</li>
+                            <li>Os campos Alias e AS-ID continuam facilitando a troca ágil sem salvar no backup.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+                
+                <div class="xl:col-span-4 space-y-6">
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden ring-1 ring-black/5">
+                        <div class="px-6 py-4 border-b border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 flex justify-between items-center">
+                            <h3 class="font-bold text-gray-900 dark:text-white flex items-center gap-2"><i data-lucide="database" size="18" class="text-primary-500"></i> Configuração de Dados</h3>
+                            <button onclick="chicago.saveSession()" class="text-xs px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 shadow-sm transition flex items-center gap-1.5 font-medium">
+                                <i data-lucide="save" size="14"></i> Salvar 
+                            </button>
+                        </div>
+                        
+                        <div class="p-6 max-h-[600px] overflow-y-auto space-y-8 custom-scrollbar">
+                            <div class="space-y-4">
+                                <h4 class="text-sm font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider border-b border-gray-200 dark:border-slate-700 pb-2 flex items-center gap-2"><i data-lucide="user" size="16"></i> Pessoa Física (PF)</h4>
+                                <div><label class="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">Nome Completo</label><input type="text" id="chi_usuario" class="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-lg text-sm dark:text-white" oninput="this.value = this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '')"></div>
+                                <div><label class="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">CPF</label><input type="text" id="chi_cpf" class="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-lg text-sm dark:text-white font-mono" maxlength="11" oninput="this.value = this.value.replace(/\D/g, '')" placeholder="Apenas números"></div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div><label class="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">ISPB</label><input type="text" id="chi_ispb" class="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-lg text-sm dark:text-white font-mono" oninput="this.value = this.value.replace(/\D/g, '')"></div>
+                                    <div><label class="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">Issuer</label><input type="text" id="chi_issuer" class="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-lg text-sm dark:text-white font-mono" oninput="this.value = this.value.replace(/\D/g, '')"></div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div><label class="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">Conta Bancária</label><input type="text" id="chi_conta" class="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-lg text-sm dark:text-white font-mono" oninput="this.value = this.value.replace(/\D/g, '')"></div>
+                                    <div><label class="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">Tipo de Conta</label><input type="text" id="chi_tipo" class="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-lg text-sm dark:text-white uppercase" oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')" placeholder="Ex: TRAN"></div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4 pt-4 border-t border-gray-200 dark:border-slate-700">
+                                <h4 class="text-sm font-bold text-pink-600 dark:text-pink-400 uppercase tracking-wider pb-2 flex items-center gap-2"><i data-lucide="building-2" size="16"></i> Pessoa Jurídica (PJ)</h4>
+                                <div><label class="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">Nome da Empresa</label><input type="text" id="chi_empresa" class="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-lg text-sm dark:text-white"></div>
+                                <div><label class="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">CNPJ</label><input type="text" id="chi_cnpj" class="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-lg text-sm dark:text-white font-mono" maxlength="14" oninput="this.value = this.value.replace(/\D/g, '')" placeholder="Apenas números"></div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div><label class="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">ISPB (PJ)</label><input type="text" id="chi_ispbpj" class="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-lg text-sm dark:text-white font-mono" oninput="this.value = this.value.replace(/\D/g, '')"></div>
+                                    <div><label class="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">Issuer (PJ)</label><input type="text" id="chi_issuerpj" class="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-lg text-sm dark:text-white font-mono" oninput="this.value = this.value.replace(/\D/g, '')"></div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div><label class="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">Conta Bancária PJ</label><input type="text" id="chi_contapj" class="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-lg text-sm dark:text-white font-mono" oninput="this.value = this.value.replace(/\D/g, '')"></div>
+                                    <div><label class="text-xs font-bold text-gray-500 dark:text-gray-400 block mb-1">Tipo de Conta PJ</label><input type="text" id="chi_tipopj" class="w-full px-3 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-lg text-sm dark:text-white uppercase" oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="xl:col-span-8 space-y-6 flex flex-col">
+                    
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden flex-shrink-0">
+                        <div class="p-6 bg-gradient-to-r from-gray-50 to-white dark:from-slate-800 dark:to-slate-800/80 border-b border-gray-200 dark:border-slate-700 space-y-4">
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4 border-b border-gray-200 dark:border-slate-700/50">
+                                <div>
+                                    <label class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block mb-1">Alias</label>
+                                    <input type="text" id="chi_alias" class="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none dark:text-white shadow-sm" placeholder="Ex: alias-teste">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block mb-1">AS-ID (Auth Server)</label>
+                                    <input type="text" id="chi_as_id" class="w-full px-4 py-2.5 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-primary-500 outline-none dark:text-white shadow-sm" placeholder="Ex: 12345-abcde">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                                
+                                <div class="md:col-span-2">
+                                    <label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-2">Seg.</label>
+                                    <select id="chi_select_segment" class="w-full px-3 py-3 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-primary-500 outline-none dark:text-white cursor-pointer shadow-sm">
+                                        <option value="pf">PF</option>
+                                        <option value="pj">PJ</option>
+                                    </select>
+                                </div>
+
+                                <div class="md:col-span-7">
+                                    <label class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-2">Tipo de Teste (Payload)</label>
+                                    <select id="chi_select_test" class="w-full px-3 py-3 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-xl text-[12px] md:text-[13px] font-medium focus:ring-2 focus:ring-primary-500 outline-none dark:text-white cursor-pointer shadow-sm truncate">
+                                        
+                                        <option value="sweeping">Production Funcional Tests For Automatic Sweeping Payments</option>
+                                        <option value="payments">Production Functional Testes for Automatic Pix Payments</option>
+                                        <option value="scheduling">Production Functional Tests For Automatic Pix Payments Scheduling</option>
+                                        <option value="e2e">Production Funcional Tests For Payments E2E - API Version 4</option>
+                                        
+                                        <option disabled value="" class="font-bold text-gray-400 dark:text-gray-600 text-center">──────────────── NOVOS TESTES ────────────────</option>
+
+                                        <option value="no_redirect_auto_novo" class="text-primary-700 dark:text-primary-400 font-bold">Production Funcional Tests For No Redirect Automatic Pix Payments - API Version 2.2</option>
+                                        <option value="no_redirect_pix_novo" class="text-primary-700 dark:text-primary-400 font-bold">Production Funcional Tests For No Redirect Payments - API Version 2.2</option>
+                                        <option value="no_redirect_auto_sched_novo" class="text-primary-700 dark:text-primary-400 font-bold">Production Funcional Tests For no Redirect Automatic Pix Payments Scheduling - API Version 2.2</option>
+                                        <option value="no_redirect_sched_novo" class="text-primary-700 dark:text-primary-400 font-bold">Production Funcional Tests For No Redirect Payments Scheduling - API Version 2.2</option>
+                                        
+                                    </select>
+                                </div>
+
+                                <div class="md:col-span-3">
+                                    <button onclick="chicago.generateFromSelect()" class="w-full px-4 py-3 bg-gray-900 hover:bg-black dark:bg-primary-600 dark:hover:bg-primary-500 text-white text-sm font-bold rounded-xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
+                                        <i data-lucide="zap" size="18"></i> Gerar JSON
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#1e1e1e] rounded-2xl shadow-xl flex-1 flex flex-col overflow-hidden relative border border-gray-800 min-h-[400px]">
+                        <div class="px-5 py-3 bg-[#2d2d2d] flex justify-between items-center border-b border-black">
+                            <span class="text-xs font-mono text-gray-400 flex items-center gap-2"><i data-lucide="terminal" size="14"></i> payload_request.json</span>
+                            <button onclick="app.copyText('chi_result')" class="text-xs font-bold text-gray-300 hover:text-white flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-1.5 rounded-lg transition">
+                                <i data-lucide="copy" size="14"></i> Copiar Código
+                            </button>
+                        </div>
+                        <textarea id="chi_result" readonly class="flex-1 w-full bg-transparent text-green-400 font-mono text-sm p-6 resize-none outline-none custom-scrollbar" placeholder="// Preencha os campos e clique em Gerar JSON..."></textarea>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="mt-12 pt-6 border-t border-gray-200 dark:border-slate-800 text-center pb-8">
+                <p class="text-xs text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1.5 font-medium">
+                    <i data-lucide="code-2" size="14" class="text-primary-500"></i>
+                    Módulo desenvolvido por <span class="font-bold text-gray-700 dark:text-gray-300">Ygor Jardim</span>
+                </p>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        const DB = {
+            marcas: ["ABC","Accreditto","Ailos","Ame Digital","Asaas","Azimut","Banco do Brasil","Banco do Nordeste","Banrisul","Bari","BMG","Bradesco","BRB","BTG Banking","BV","C6","Caixa","Celcoin","Cielo","Cora","Digio","Efí","Genial","Geru","Getnet","Hyundai","Infinite Pay","Inter","Itaú","Iti","Iugu","Listo","Master","Mei Fácil","Mercado Pago","Mercantil","Midway","Modal","Méliuz","Neon","Next","Nubank","Original","PagBank","Pan","Pic Pay","PlayersBank","Quero Quero Pag","Randon","RecargaPay","Rico","Safra","Santander","Sicoob","Sicredi","Sofisa","Stone","Super Digital","Uber Conta","Up.P","Volvo","WillBank","XP","Ágora Investimentos","Íon","BTG Investimentos","Santander Cartões","Santander Financiamentos","Santander Crédito Imob","Empréstimo Sim","Santander Corretora","Bradescard","Investimentos BB","Toro","Ourocard","BTG Empresas","Iniciador.com","Google Pay","Lina Openx","Banco Industrial","Pernambucanas","Rede","Porto Bank","WHG","MagaluPay","Monte Bravo","Klavi","Mobilize Financial","CrediNissan","Belvo","Àgora Investimento","Crefisa"],
+            testes: ["Pix Scheduling 1-2", "JSR Pix Verification 1-2", "Pix Retry 1-3", "Consents V3", "Accounts V3", "Debtor V4", "Not Cancelled V4", "Resources", "Unique", "Custom Core V4", "Real Email Invalid V4", "Fake Email Proxy V4", "SWP Total Allowed", "SWP Accounts Core", "Payments Core V2.2", "Invalid Challenge V2.2", "Invalid Origin V2.2", "Invalid Public Key V2.2", "Invalid RPID V2.2", "Pre-Enrollment V2.2", "Invalid Status V2.2", "Keys Swap V2.2", "Unmatching Fields V2.2", "APX Semanal", "APX Scheduled", "Authorised Executed", "Limits Negative", "Limits", "Not Authorised"]
+        };
+
+        const app = {
+            versoesLoja: {}, // Armazena as versões lidas do JSON
+
+            init: function() {
+                this.verifyAuthStatus();
+                this.populateLists();
+                if(document.getElementById('logData')) document.getElementById('logData').valueAsDate = new Date();
+                this.renderTable();
+                this.setupListeners();
+                lucide.createIcons();
+                this.syncEvidences();
+                this.updateErrorReport();
+                
+                // Tenta carregar as versões assim que abrir a página
+                this.carregarVersoes();
+
+                if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+
+                this.switchTab('chicago'); 
+                chicago.loadSession(); 
+            },
+
+            // ==========================================
+            // LÓGICA DE INTEGRAÇÃO COM O GITHUB
+            // ==========================================
+            carregarVersoes: async function() {
+                try {
+                    // Adiciona um timestamp na URL para evitar cache do navegador e pegar sempre o arquivo fresco
+                    const response = await fetch('versoes.json?' + new Date().getTime());
+                    if (response.ok) {
+                        this.versoesLoja = await response.json();
+                        console.log("Versões atualizadas carregadas com sucesso!");
+                        this.preencherVersaoApp(); // Atualiza a tela se já tiver marca selecionada
+                    }
+                } catch (error) {
+                    console.log("Arquivo versoes.json não encontrado ou indisponível.");
+                }
+            },
+
+            preencherVersaoApp: function() {
+                const marcaSelecionada = document.getElementById('logMarca').value;
+                const campoVersao = document.getElementById('errorVersion');
+                if (marcaSelecionada && this.versoesLoja[marcaSelecionada]) {
+                    campoVersao.value = this.versoesLoja[marcaSelecionada];
+                    this.updateErrorReport(); // Força a atualização do texto do relatório
+                }
+            },
+
+            dispararRoboGithub: async function() {
+                // Coloque o seu token Fine-grained gerado no GitHub aqui:
+                const token = ""; 
+                
+                const owner = "alanteixeira87";
+                const repo = "Gerenciador-2.0";
+                const workflow = "atualizar_versoes.yml";
+
+                this.showToast("Acordando o robô na nuvem...", "success");
+
+                try {
+                    const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflow}/dispatches`, {
+                        method: "POST",
+                        headers: {
+                            "Accept": "application/vnd.github.v3+json",
+                            "Authorization": `Bearer ${token}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ ref: "main" })
+                    });
+
+                    if (response.ok) {
+                        this.showToast("Robô iniciado! A loja será mapeada em ~2 minutos.", "success");
+                        
+                        const btn = document.getElementById('btnAtualizarLoja');
+                        if(btn) {
+                            btn.innerHTML = `<i class="animate-spin" data-lucide="loader-2" size="18"></i> Raspando Loja...`;
+                            btn.disabled = true;
+                            btn.classList.add('opacity-50', 'cursor-not-allowed');
+                            if (typeof lucide !== 'undefined') lucide.createIcons();
+                            
+                            // Aguarda 2 minutos e meio (150000 ms) para o Github terminar o processo
+                            setTimeout(() => {
+                                btn.innerHTML = `<i data-lucide="refresh-cw" size="18"></i> Consultar Play Store`;
+                                btn.disabled = false;
+                                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                                
+                                // Recarrega as versões do JSON
+                                this.carregarVersoes();
+                                
+                                this.showToast("Versões atualizadas do servidor!", "success");
+                                if (typeof lucide !== 'undefined') lucide.createIcons();
+                            }, 150000); 
+                        }
+                    } else {
+                        const errorText = await response.text();
+                        this.showToast("Erro ao contatar o robô. Verifique as permissões do Token.", "error");
+                        console.error("Erro do GitHub:", errorText);
+                    }
+                } catch (error) {
+                    this.showToast("Erro de conexão com o GitHub.", "error");
+                    console.error("Erro na requisição:", error);
+                }
+            },
+
+            // ==========================================
+            // LÓGICA DE SEGURANÇA E BLOQUEIO DE TELA
+            // ==========================================
+            checkLogin: function() {
+                const input = document.getElementById('passInput').value;
+                const error = document.getElementById('loginError');
+                
+                // Senha configurada: qa2026 (em Base64)
+                const SENHA_B64 = "cWEyMDI2"; 
+
+                if (btoa(input) === SENHA_B64) {
+                    sessionStorage.setItem('qa_auth', 'true');
+                    sessionStorage.setItem('qa_last_activity', Date.now());
+                    
+                    document.getElementById('loginOverlay').classList.add('opacity-0');
+                    setTimeout(() => { document.getElementById('loginOverlay').style.display = 'none'; }, 300);
+                    
+                    this.iniciarMonitoramentoInatividade();
+                } else {
+                    error.classList.remove('hidden');
+                    document.getElementById('passInput').value = '';
+                    document.getElementById('passInput').focus();
+                }
+            },
+
+            verifyAuthStatus: function() {
+                const TEMPO_LIMITE_MINUTOS = 15;
+                if (sessionStorage.getItem('qa_auth') === 'true') {
+                    const ultimaAtividade = parseInt(sessionStorage.getItem('qa_last_activity') || '0');
+                    const tempoOcioso = (Date.now() - ultimaAtividade) / 1000 / 60;
+                    
+                    if (tempoOcioso > TEMPO_LIMITE_MINUTOS) {
+                        this.logoutPorInatividade();
+                    } else {
+                        document.getElementById('loginOverlay').style.display = 'none';
+                        this.iniciarMonitoramentoInatividade();
+                    }
+                }
+            },
+
+            iniciarMonitoramentoInatividade: function() {
+                document.onmousemove = () => this.resetarTempo();
+                document.onkeypress = () => this.resetarTempo();
+                document.ontouchstart = () => this.resetarTempo();
+                this.resetarTempo();
+            },
+
+            resetarTempo: function() {
+                const TEMPO_LIMITE_MINUTOS = 15;
+                if (sessionStorage.getItem('qa_auth') === 'true') {
+                    sessionStorage.setItem('qa_last_activity', Date.now());
+                    clearTimeout(window.timeoutInatividade);
+                    window.timeoutInatividade = setTimeout(() => app.logoutPorInatividade(), TEMPO_LIMITE_MINUTOS * 60000);
+                }
+            },
+
+            logoutPorInatividade: function() {
+                sessionStorage.removeItem('qa_auth');
+                const overlay = document.getElementById('loginOverlay');
+                overlay.style.display = 'flex';
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+                this.showToast("Sessão expirada por inatividade.", "error");
+            },
+
+            // --- LÓGICAS DAS ABAS ANTIGAS ---
+            populateLists: function() {
+                const createOptions = (arr, elId) => {
+                    const el = document.getElementById(elId);
+                    if(!el) return;
+                    arr.forEach(i => { const opt = document.createElement('option'); opt.value = i; el.appendChild(opt); });
+                };
+                createOptions(DB.marcas, 'listMarcas');
+                createOptions(DB.testes, 'listTestes');
+            },
+            setupListeners: function() {
+                ['agendaTipo', 'agendaInicio', 'agendaMarca', 'agendaSegmento'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el) el.addEventListener('input', () => this.calculateAgenda());
+                });
+            },
+            switchTab: function(tabName) {
+                const activeClasses = "bg-primary-600 text-white shadow-lg shadow-primary-500/20";
+                const inactiveClasses = "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700/50";
+                const tabs = ['nomenclatura', 'agendamentos', 'relatorios', 'chicago'];
+                tabs.forEach(t => {
+                    const btn = document.getElementById(`nav-${t}`);
+                    const view = document.getElementById(`view-${t}`);
+                    if(!btn || !view) return;
+                    if(t === tabName) {
+                        view.classList.remove('hidden');
+                        btn.className = `group w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${activeClasses}`;
+                    } else {
+                        view.classList.add('hidden');
+                        btn.className = `group w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${inactiveClasses}`;
+                    }
+                });
+            },
+            toggleTheme: function() {
+                if (document.documentElement.classList.contains('dark')) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                }
+            },
+            showToast: function(msg, type = 'success') {
+                const t = document.getElementById('toast');
+                const m = document.getElementById('toast-msg');
+                const title = document.getElementById('toast-title');
+                const iconBg = document.getElementById('toast-icon-bg');
+                m.textContent = msg;
+                if (type === 'error') {
+                    t.classList.remove('border-green-500'); t.classList.add('border-red-500');
+                    iconBg.className = 'inline-flex items-center justify-center flex-shrink-0 w-9 h-9 text-red-500 bg-red-100 rounded-lg dark:bg-red-500/20 dark:text-red-400';
+                    title.textContent = 'Atenção';
+                    document.getElementById('toast-icon').setAttribute('data-lucide', 'alert-circle');
+                } else {
+                    t.classList.remove('border-red-500'); t.classList.add('border-green-500');
+                    iconBg.className = 'inline-flex items-center justify-center flex-shrink-0 w-9 h-9 text-green-500 bg-green-100 rounded-lg dark:bg-green-500/20 dark:text-green-400';
+                    title.textContent = 'Sucesso!';
+                    document.getElementById('toast-icon').setAttribute('data-lucide', 'check-circle-2');
+                }
+                lucide.createIcons();
+                t.classList.remove('translate-x-[120%]', 'opacity-0');
+                setTimeout(() => t.classList.add('translate-x-[120%]', 'opacity-0'), 3500);
+            },
+            generateLog: function() {
+                const f = { teste: document.getElementById('logTeste').value, so: document.getElementById('logSO').value, marca: document.getElementById('logMarca').value, seg: document.getElementById('logSegmento').value, status: document.getElementById('logStatus').value, data: document.getElementById('logData').value };
+                if(!f.teste || !f.marca) { this.showToast("Preencha Marca e Teste!", "error"); return; }
+                const str = `${f.status} - ${f.marca} - ${f.seg} - ${f.teste} - ${f.data.split('-').reverse().join('-')} - ${f.so}`;
+                document.getElementById('logResult').textContent = str;
+                document.getElementById('logGroup').classList.remove('hidden');
+                this.copyText('logResult');
+            },
+            syncEvidences: function() { 
+                const marca = document.getElementById('logMarca').value || "...";
+                const seg = document.getElementById('logSegmento').value;
+                document.getElementById('evResult1').textContent = `Evidencia - ${marca} - ${seg} - Saldo`;
+                document.getElementById('evResult2').textContent = `Evidencia - ${marca} - ${seg} - Versão app`;
+                document.getElementById('evResult3').textContent = `Evidencia - ${marca} - ${seg} - Mensagem de erro`;
+            },
+            copyText: function(id) {
+                const el = document.getElementById(id);
+                const txt = el.value !== undefined ? el.value : el.textContent;
+                navigator.clipboard.writeText(txt).then(() => this.showToast('Copiado para a área de transferência!'));
+            },
+            checkSync: function() { 
+                const f = { teste: document.getElementById('logTeste').value, marca: document.getElementById('logMarca').value, seg: document.getElementById('logSegmento').value, status: document.getElementById('logStatus').value, data: document.getElementById('logData').value };
+                const triggers = ["Pix Scheduling 1-2", "JSR Pix Verification 1-2", "Pix Retry 1-3"];
+                if (triggers.includes(f.teste) && f.marca && f.status === 'OK') {
+                    document.getElementById('agendaMarca').value = f.marca;
+                    document.getElementById('agendaSegmento').value = f.seg;
+                    document.getElementById('agendaTipo').value = f.teste;
+                    if(f.data) document.getElementById('agendaInicio').value = f.data;
+                    this.showToast('Sincronizado!');
+                    this.calculateAgenda();
+                }
+            },
+            calculateAgenda: function() { 
+                const type = document.getElementById('agendaTipo').value;
+                const startStr = document.getElementById('agendaInicio').value;
+                const brand = document.getElementById('agendaMarca').value || "MARCA";
+                const seg = document.getElementById('agendaSegmento').value;
+                if (!type || !startStr) return;
+                const isRetry = type.includes("Retry");
+                const days = isRetry ? 3 : 2;
+                const start = new Date(startStr + 'T00:00:00');
+                const end = new Date(start);
+                end.setDate(start.getDate() + days);
+                document.getElementById('agendaFim').value = end.toISOString().split('T')[0];
+                document.getElementById('btnGoogle').disabled = false;
+                const fmt = d => `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
+                const add = (d, n) => { const x = new Date(d); x.setDate(d.getDate()+n); return x; };
+                let txt = `=== 📋 GUIA: ${brand.toUpperCase()} [${seg}] ===\nTeste: ${type}\n\n`;
+                if (isRetry) {
+                    txt += `💰 SALDO: R$ 0,00 (Obrigatório)\n🚫 Bloqueio TOTAL de pagamentos.\n📅 CRONOGRAMA:\n`;
+                    txt += `[ ] ${fmt(add(start,0))} (D+0): R$ 0,00\n[ ] ${fmt(add(start,1))} (D+1): R$ 0,00\n[ ] ${fmt(add(start,2))} (D+2): R$ 0,00\n[👉] ${fmt(add(start,3))} (D+3): Pagar R$ 1,00`;
+                } else {
+                    txt += `💰 SALDO: Mínimo R$ 5,00\n📅 CRONOGRAMA:\n`;
+                    txt += `[ ] ${fmt(add(start,0))} (D+0): Saldo R$ 2,00\n[ ] ${fmt(add(start,1))} (D+1): Saldo R$ 2,00\n[ ] ${fmt(add(start,2))} (D+2): Saldo R$ 1,00`;
+                }
+                document.getElementById('agendaInstrucoes').value = txt;
+            },
+            updateErrorReport: function() { 
+                const stage = document.getElementById('errorStage').value;
+                const version = document.getElementById('errorVersion').value;
+                const attempts = document.getElementById('errorAttempts').value;
+                const platform = document.getElementById('errorPlatform').value;
+                const analysis = document.getElementById('errorAnalysis').value;
+                const versionInput = document.getElementById('errorVersion');
+                const analysisContainer = document.getElementById('analysisContainer');
+                if (stage === '1') { versionInput.disabled = true; versionInput.placeholder = "Não aplicável"; } else { versionInput.disabled = false; versionInput.placeholder = "Ex: 8.5.0"; }
+                if (stage === '5') { analysisContainer.style.display = 'none'; } else { analysisContainer.style.display = 'block'; }
+                const commonPhrase = "Anexo o log com detalhamento.\n";
+                let text = "";
+                if (stage === '1') {
+                    if(!analysis && document.getElementById('errorAnalysis').value === "") document.getElementById('errorAnalysis').value = "Boa tarde, o teste foi realizado pelo usuário mas apresentou erro.";
+                    text = `Prezados, realizamos o teste solicitado, porém apresentou erro antes do redirecionamento.\n${commonPhrase}Número de tentativas: ${attempts}\nAnálise do QA: ${document.getElementById('errorAnalysis').value}`;
+                } else if (stage === '2') {
+                    text = `Prezados, realizamos o teste solicitado, porém apresentou durante a etapa de login do usuário.\n${commonPhrase}Versão do app: ${version}\nNúmero de tentativas: ${attempts}\nPlataforma: ${platform}\nAnálise do QA: ${analysis}`;
+                } else if (stage === '3') {
+                    text = `Prezados, realizamos o teste solicitado, porém apresentou durante a jornada de consentimento.\n${commonPhrase}Versão do app: ${version}\nNúmero de tentativas: ${attempts}\nPlataforma: ${platform}\nAnálise do QA: ${analysis}`;
+                } else if (stage === '4') {
+                    text = `Prezados, realizamos o teste solicitado, porém ao retornar para o FVP apresenta erro.\n${commonPhrase}Versão: ${version}\nNúmero de tentativas: ${attempts}\nPlataforma: ${platform}\nAnálise do QA: ${analysis}`;
+                } else if (stage === '5') {
+                    text = `Teste realizado com sucesso.\n${commonPhrase}Versão app: ${version}\nNúmero de tentativas: ${attempts}\nPlataforma: ${platform}`;
+                }
+                document.getElementById('errorResult').value = text;
+            },
+            insertRaidiamText: function() { document.getElementById('errorAnalysis').value = "Boa tarde, o teste foi realizado pelo usuário mas apresentou erro."; this.updateErrorReport(); },
+            getStored: () => JSON.parse(localStorage.getItem('qa_scheduler_v2') || '[]'),
+            saveTest: function() { 
+                const d = { id: Date.now(), brand: document.getElementById('agendaMarca').value, seg: document.getElementById('agendaSegmento').value, type: document.getElementById('agendaTipo').value, start: document.getElementById('agendaInicio').value, end: document.getElementById('agendaFim').value, desc: document.getElementById('agendaInstrucoes').value };
+                if(!d.brand || !d.type || !d.start) { this.showToast("Preencha os campos!", "error"); return; }
+                const data = this.getStored(); data.push(d); localStorage.setItem('qa_scheduler_v2', JSON.stringify(data)); this.renderTable(); this.showToast('Salvo!');
+            },
+            deleteTest: function(id) { if(confirm("Remover?")) { const data = this.getStored().filter(t => t.id !== id); localStorage.setItem('qa_scheduler_v2', JSON.stringify(data)); this.renderTable(); } },
+            renderTable: function() { 
+                const data = this.getStored().sort((a,b) => new Date(a.start) - new Date(b.start));
+                const tbody = document.getElementById('scheduleTable'); tbody.innerHTML = '';
+                if(data.length===0) { tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Vazio.</td></tr>`; return; }
+                data.forEach(t => {
+                    const badge = t.seg==='PF' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : 'bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300';
+                    const fmt = s => s.split('-').reverse().slice(0,2).join('/');
+                    tbody.innerHTML += `<tr class="bg-white border-b border-gray-100 dark:bg-slate-800 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/50"><td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">${t.brand}</td><td class="px-6 py-4"><span class="${badge} text-xs font-bold px-3 py-1 rounded-full">${t.seg}</span></td><td class="px-6 py-4 text-gray-600 dark:text-gray-300">${t.type}</td><td class="px-6 py-4 text-gray-600 dark:text-gray-300 font-mono text-xs">${fmt(t.start)}</td><td class="px-6 py-4 text-gray-600 dark:text-gray-300 font-mono text-xs">${fmt(t.end)}</td><td class="px-6 py-4 text-right"><button onclick="app.deleteTest(${t.id})" class="text-gray-400 hover:text-red-500 p-2"><i data-lucide="trash-2" size="18"></i></button></td></tr>`;
+                });
+                lucide.createIcons();
+            },
+            openGoogleCalendar: function() { 
+                const m = document.getElementById('agendaMarca').value; const t = document.getElementById('agendaTipo').value; const f = document.getElementById('agendaFim').value; const d = document.getElementById('agendaInstrucoes').value;
+                if (!f) return this.showToast("Data final não definida!", "error");
+                const endObj = new Date(f + 'T12:00:00'); const startStr = endObj.toISOString().slice(0,10).replace(/-/g, ''); endObj.setDate(endObj.getDate() + 1); const endStr = endObj.toISOString().slice(0,10).replace(/-/g, '');
+                window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`FINALIZAR: ${m} - ${t}`)}&dates=${startStr}/${endStr}&details=${encodeURIComponent(d)}`, '_blank');
+            },
+            exportData: function() { 
+                const d = localStorage.getItem('qa_scheduler_v2'); if(!d || d==='[]') return this.showToast("Nada.", "error");
+                const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([d], {type:'application/json'})); a.download = `backup_${new Date().toISOString().slice(0,10)}.json`; a.click();
+            },
+            exportExcel: function() { 
+                const d = this.getStored(); if(!d.length) return this.showToast("Nada.", "error");
+                let csv = "\uFEFFMarca;Segmento;Teste;Inicio;Fim;Detalhes\n"; d.forEach(t => csv += `${t.brand};${t.seg};${t.type};${t.start};${t.end};"${t.desc.replace(/\n/g,' ')}"\n`);
+                const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'})); a.download = `relatorio.csv`; a.click();
+            },
+            importData: function(inp) { 
+                const f = inp.files[0]; if(!f) return;
+                const r = new FileReader();
+                r.onload = e => { try { localStorage.setItem('qa_scheduler_v2', JSON.stringify(JSON.parse(e.target.result))); this.renderTable(); this.showToast("Restaurado!"); } catch(err) { this.showToast("Inválido", "error"); } };
+                r.readAsText(f);
+            }
+        };
+
+        // ==========================================
+        // MÓDULO: JSON CHICAGO (API PAYLOADS)
+        // ==========================================
+        const chicago = {
+            validaCPF: function(cpf) {
+                cpf = cpf.replace(/\D/g, '');
+                if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+                let soma = 0, resto;
+                for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i-1, i)) * (11 - i);
+                resto = (soma * 10) % 11;
+                if ((resto === 10) || (resto === 11)) resto = 0;
+                if (resto !== parseInt(cpf.substring(9, 10))) return false;
+                soma = 0;
+                for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i-1, i)) * (12 - i);
+                resto = (soma * 10) % 11;
+                if ((resto === 10) || (resto === 11)) resto = 0;
+                if (resto !== parseInt(cpf.substring(10, 11))) return false;
+                return true;
+            },
+            validaCNPJ: function(cnpj) {
+                cnpj = cnpj.replace(/\D/g, '');
+                if (cnpj.length !== 14 || /^(\d)\1{13}$/.test(cnpj)) return false;
+                let tamanho = cnpj.length - 2;
+                let numeros = cnpj.substring(0, tamanho);
+                let digitos = cnpj.substring(tamanho);
+                let soma = 0;
+                let pos = tamanho - 7;
+                for (let i = tamanho; i >= 1; i--) { soma += numeros.charAt(tamanho - i) * pos--; if (pos < 2) pos = 9; }
+                let resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+                if (resultado != digitos.charAt(0)) return false;
+                tamanho = tamanho + 1;
+                numeros = cnpj.substring(0, tamanho);
+                soma = 0;
+                pos = tamanho - 7;
+                for (let i = tamanho; i >= 1; i--) { soma += numeros.charAt(tamanho - i) * pos--; if (pos < 2) pos = 9; }
+                resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+                if (resultado != digitos.charAt(1)) return false;
+                return true;
+            },
+
+            getCampos: function() {
+                return {
+                    usuario: document.getElementById('chi_usuario').value,
+                    cpf: document.getElementById('chi_cpf').value,
+                    cnpj: document.getElementById('chi_cnpj').value,
+                    empresa: document.getElementById('chi_empresa').value,
+                    ispb: document.getElementById('chi_ispb').value,
+                    ispbpj: document.getElementById('chi_ispbpj').value,
+                    issuer: document.getElementById('chi_issuer').value,
+                    issuerpj: document.getElementById('chi_issuerpj').value,
+                    conta: document.getElementById('chi_conta').value,
+                    contapj: document.getElementById('chi_contapj').value,
+                    tipo: document.getElementById('chi_tipo').value.toUpperCase(),
+                    tipopj: document.getElementById('chi_tipopj').value.toUpperCase()
+                };
+            },
+
+            saveSession: function(silent = false) {
+                const dados = this.getCampos();
+                if(!silent) {
+                    if(dados.cpf && !this.validaCPF(dados.cpf)) { app.showToast("CPF Inválido!", "error"); return false; }
+                    if(dados.cnpj && !this.validaCNPJ(dados.cnpj)) { app.showToast("CNPJ Inválido!", "error"); return false; }
+                    app.showToast("Dados salvos no navegador!");
+                }
+                localStorage.setItem('chicago_session', JSON.stringify(dados));
+                return true;
+            },
+
+            loadSession: function() {
+                const s = JSON.parse(localStorage.getItem('chicago_session') || '{}');
+                if(Object.keys(s).length === 0) return;
+                
+                document.getElementById('chi_usuario').value = s.usuario || "";
+                document.getElementById('chi_cpf').value = s.cpf || "";
+                document.getElementById('chi_cnpj').value = s.cnpj || "";
+                document.getElementById('chi_empresa').value = s.empresa || "";
+                document.getElementById('chi_ispb').value = s.ispb || "";
+                document.getElementById('chi_ispbpj').value = s.ispbpj || "";
+                document.getElementById('chi_issuer').value = s.issuer || "";
+                document.getElementById('chi_issuerpj').value = s.issuerpj || "";
+                document.getElementById('chi_conta').value = s.conta || "";
+                document.getElementById('chi_contapj').value = s.contapj || "";
+                document.getElementById('chi_tipo').value = s.tipo || "";
+                document.getElementById('chi_tipopj').value = s.tipopj || "";
+            },
+
+            exportSession: function() {
+                this.saveSession(true);
+                const d = localStorage.getItem('chicago_session');
+                if(!d || d === '{}') return app.showToast("Nada para exportar", "error");
+                const b = new Blob([d], {type:'application/json'});
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(b);
+                a.download = `chicago_backup_${new Date().toISOString().slice(0,10)}.json`;
+                a.click();
+            },
+
+            importSession: function(inp) {
+                const f = inp.files[0];
+                if(!f) return;
+                const r = new FileReader();
+                r.onload = e => {
+                    try {
+                        const j = JSON.parse(e.target.result);
+                        if(confirm("Substituir dados atuais pelo backup importado?")) {
+                            localStorage.setItem('chicago_session', JSON.stringify(j));
+                            this.loadSession();
+                            app.showToast("Backup restaurado!");
+                        }
+                    } catch(err) { app.showToast("Arquivo inválido", "error"); }
+                    inp.value = ""; 
+                };
+                r.readAsText(f);
+            },
+
+            outputJson: function(obj) {
+                const str = JSON.stringify(obj, null, 4);
+                document.getElementById('chi_result').value = str;
+                app.copyText('chi_result');
+            },
+
+            generateFromSelect: function() {
+                const segment = document.getElementById('chi_select_segment').value; 
+                const test = document.getElementById('chi_select_test').value; 
+                const typeToGenerate = `${test}_${segment}`; 
+                this.generate(typeToGenerate);
+            },
+
+            generate: function(type) {
+                if(!this.saveSession(true)) return; 
+                
+                const d = this.getCampos();
+                const aliasVal = document.getElementById('chi_alias').value;
+                const asIdVal = document.getElementById('chi_as_id').value;
+                
+                if(!d.cpf) { app.showToast("O campo CPF é obrigatório na Configuração.", "error"); return; }
+                if(type.includes('pj') && !d.cnpj) { app.showToast("O campo CNPJ é obrigatório para payloads PJ.", "error"); return; }
+
+                let payload = {
+                    "alias": aliasVal,
+                    "server": {
+                        "authorisationServerId": asIdVal
+                    },
+                    "resource": {},
+                    "directory": {}
+                };
+
+                switch(type) {
+                    
+                    // ==============================
+                    // PESSOA FÍSICA (PF)
+                    // ==============================
+                    case 'sweeping_pf':
+                        payload.resource = {
+                            loggedUserIdentification: d.cpf,
+                            creditorAccountIspb: d.ispb,
+                            creditorAccountIssuer: d.issuer,
+                            creditorAccountNumber: d.conta,
+                            creditorAccountAccountType: d.tipo,
+                            creditorName: d.usuario,
+                            brazilCpf: d.cpf
+                        };
+                        break;
+
+                    case 'payments_pf': 
+                    case 'scheduling_pf': 
+                        payload.resource = {
+                            loggedUserIdentification: d.cpf,
+                            contractDebtorName: d.usuario,
+                            contractDebtorIdentification: d.cpf,
+                            creditorAccountIspb: "18236120",
+                            creditorAccountIssuer: "0001",
+                            creditorAccountNumber: "8360375143",
+                            creditorAccountAccountType: "TRAN",
+                            creditorName: "JSR SERVICE LTDA",
+                            creditorCpfCnpj: "63602987000134",
+                            brazilCpf: d.cpf
+                        };
+                        break;
+
+                    case 'redirect_pf': 
+                        payload.resource = {
+                            loggedUserIdentification: d.cpf,
+                            contractDebtorIdentification: d.cpf,
+                            creditorAccountIspb: "18236120",
+                            creditorAccountIssuer: "0001",
+                            creditorAccountNumber: "8360375143",
+                            creditorAccountAccountType: "TRAN",
+                            creditorName: "JSR SERVICE LTDA",
+                            creditorCpfCnpj: "63602987000134",
+                            creditorProxy: "1b25f9c3-8c4c-4491-b67f-10cf007d500c",
+                            brazilCpf: d.cpf
+                        };
+                        break;
+
+                    case 'e2e_pf':
+                        payload.resource = {
+                            loggedUserIdentification: d.cpf,
+                            creditorAccountIspb: "18236120",
+                            creditorAccountIssuer: "0001",
+                            creditorAccountNumber: "8360375143",
+                            creditorAccountAccountType: "TRAN",
+                            creditorName: "JSR SERVICE LTDA",
+                            creditorCpfCnpj: "63602987000134",
+                            creditorProxy: "1b25f9c3-8c4c-4491-b67f-10cf007d500c",
+                            brazilCpf: d.cpf
+                        };
+                        break;
+
+                    // --- NOVOS PF ---
+                    case 'no_redirect_auto_sched_novo_pf':
+                    case 'no_redirect_auto_novo_pf':
+                        payload.resource = {
+                            loggedUserIdentification: d.cpf,
+                            contractDebtorName: d.usuario,
+                            contractDebtorIdentification: d.cpf,
+                            creditorAccountIspb: "18236120",
+                            creditorAccountIssuer: "0001",
+                            creditorAccountNumber: "8360375143",
+                            creditorAccountAccountType: "TRAN",
+                            creditorName: "JSR SERVICE LTDA",
+                            creditorCpfCnpj: "63602987000134",
+                            brazilCpf: d.cpf
+                        };
+                        break;
+
+                    case 'no_redirect_pix_novo_pf':
+                        payload = {
+                            "alias": aliasVal,
+                            "server": {
+                                "authorisationServerId": asIdVal
+                            },
+                            "resource": {
+                                loggedUserIdentification: d.cpf,
+                                creditorAccountIspb: "18236120",
+                                creditorAccountIssuer: "0001",
+                                creditorAccountNumber: "8360375143",
+                                creditorAccountAccountType: "TRAN",
+                                creditorName: "JSR SERVICE LTDA",
+                                creditorCpfCnpj: "63602987000134",
+                                brazilCpf: d.cpf
+                            }
+                        };
+                        break;
+
+                    case 'no_redirect_sched_novo_pf':
+                        payload.resource = {
+                            loggedUserIdentification: d.cpf,
+                            creditorAccountIspb: "18236120",
+                            creditorAccountIssuer: "0001",
+                            creditorAccountNumber: "8360375143",
+                            creditorAccountAccountType: "TRAN",
+                            creditorName: "JSR SERVICE LTDA",
+                            creditorCpfCnpj: "63602987000134",
+                            creditorProxy: "1b25f9c3-8c4c-4491-b67f-10cf007d500c",
+                            brazilCpf: d.cpf
+                        };
+                        break;
+                    
+                    // ==============================
+                    // PESSOA JURÍDICA (PJ)
+                    // ==============================
+                    case 'sweeping_pj':
+                        payload.resource = {
+                            loggedUserIdentification: d.cpf,
+                            businessEntityIdentification: d.cnpj,
+                            creditorAccountIspb: d.ispbpj,
+                            creditorAccountIssuer: d.issuerpj,
+                            creditorAccountNumber: d.contapj,
+                            creditorAccountAccountType: d.tipopj,
+                            creditorName: d.empresa,
+                            brazilCpf: d.cpf,
+                            brazilCnpj: d.cnpj
+                        };
+                        break;
+
+                    case 'payments_pj': 
+                    case 'scheduling_pj':
+                        payload.resource = {
+                            loggedUserIdentification: d.cpf,
+                            businessEntityIdentification: d.cnpj,
+                            contractDebtorName: d.usuario,
+                            contractDebtorIdentification: d.cpf,
+                            creditorAccountIspb: "18236120",
+                            creditorAccountIssuer: "0001",
+                            creditorAccountNumber: "8360375143",
+                            creditorAccountAccountType: "TRAN",
+                            creditorName: "JSR SERVICE LTDA",
+                            creditorCpfCnpj: "63602987000134",
+                            brazilCpf: d.cpf,
+                            brazilCnpj: d.cnpj
+                        };
+                        break;
+
+                    case 'redirect_pj': 
+                    case 'e2e_pj':
+                        payload.resource = {
+                            loggedUserIdentification: d.cpf,
+                            businessEntityIdentification: d.cnpj,
+                            creditorAccountIspb: "18236120",
+                            creditorAccountIssuer: "0001",
+                            creditorAccountNumber: "8360375143",
+                            creditorAccountAccountType: "TRAN",
+                            creditorName: "JSR SERVICE LTDA",
+                            creditorCpfCnpj: "63602987000134",
+                            creditorProxy: "1b25f9c3-8c4c-4491-b67f-10cf007d500c",
+                            brazilCpf: d.cpf,
+                            brazilCnpj: d.cnpj
+                        };
+                        break;
+
+                    // --- NOVOS PJ ---
+                    case 'no_redirect_auto_sched_novo_pj':
+                    case 'no_redirect_auto_novo_pj':
+                        payload.resource = {
+                            loggedUserIdentification: d.cpf,
+                            contractDebtorName: d.usuario,
+                            contractDebtorIdentification: d.cpf,
+                            creditorAccountIspb: "18236120",
+                            creditorAccountIssuer: "0001",
+                            creditorAccountNumber: "8360375143",
+                            creditorAccountAccountType: "TRAN",
+                            creditorName: "JSR SERVICE LTDA",
+                            creditorCpfCnpj: "63602987000134",
+                            brazilCpf: d.cpf,
+                            businessEntityIdentification: d.cnpj,
+                            brazilCnpj: d.cnpj
+                        };
+                        break;
+
+                    case 'no_redirect_pix_novo_pj':
+                        payload = {
+                            "alias": aliasVal,
+                            "server": {
+                                "authorisationServerId": asIdVal
+                            },
+                            "resource": {
+                                loggedUserIdentification: d.cpf,
+                                creditorAccountIspb: "18236120",
+                                creditorAccountIssuer: "0001",
+                                creditorAccountNumber: "8360375143",
+                                creditorAccountAccountType: "TRAN",
+                                creditorName: "JSR SERVICE LTDA",
+                                creditorCpfCnpj: "63602987000134",
+                                brazilCpf: d.cpf,
+                                businessEntityIdentification: d.cnpj,
+                                brazilCnpj: d.cnpj
+                            }
+                        };
+                        break;
+
+                    case 'no_redirect_sched_novo_pj':
+                        payload.resource = {
+                            loggedUserIdentification: d.cpf,
+                            businessEntityIdentification: d.cnpj,
+                            creditorAccountIspb: "18236120",
+                            creditorAccountIssuer: "0001",
+                            creditorAccountNumber: "8360375143",
+                            creditorAccountAccountType: "TRAN",
+                            creditorName: "JSR SERVICE LTDA",
+                            creditorCpfCnpj: "63602987000134",
+                            creditorProxy: "1b25f9c3-8c4c-4491-b67f-10cf007d500c", 
+                            brazilCpf: d.cpf,
+                            brazilCnpj: d.cnpj
+                        };
+                        break;
+                }
+
+                this.outputJson(payload);
+            }
+        };
+
+        // INICIALIZAR SISTEMA GERAL
+        document.addEventListener('DOMContentLoaded', () => app.init());
+    </script>
+</body>
+</html>
